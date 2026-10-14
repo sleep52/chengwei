@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>你看见我了</title>
+  <link rel="stylesheet" href="css/base.css">
+  <style>
+    body {
+      background: #0a0c0f;
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 2rem;
+    }
+
+    .container { max-width: 500px; width: 100%; text-align: center; }
+
+    .intro-text {
+      font-size: 0.8rem; color: #484f58; line-height: 1.8;
+      margin-bottom: 2rem; opacity: 0; transition: opacity 1.5s;
+    }
+    .intro-text.visible { opacity: 1; }
+
+    .photo-frame {
+      background: #d4c5a9; padding: 1.2rem;
+      margin: 0 auto 2rem; max-width: 280px;
+      box-shadow: 0 4px 30px rgba(0,0,0,0.4);
+      opacity: 0; transition: opacity 2s;
+    }
+    .photo-frame.visible { opacity: 1; }
+
+    .photo-inner {
+      background: #b8a88a; aspect-ratio: 3/4;
+      display: flex; align-items: center; justify-content: center;
+      filter: sepia(0.4) contrast(0.85);
+      position: relative; overflow: hidden;
+    }
+
+    .photo-figure { width: 28px; height: 55px; }
+    .photo-figure .fig-head {
+      width: 13px; height: 13px; background: #d4a574;
+      border-radius: 50%; margin: 0 auto 2px;
+    }
+    .photo-figure .fig-body {
+      width: 16px; height: 22px; background: #4a6fa5;
+      margin: 0 auto; border-radius: 3px;
+    }
+
+    .photo-water {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      height: 35%;
+      background: linear-gradient(to top, rgba(13,59,79,0.5), transparent);
+    }
+
+    .photo-date {
+      position: absolute; bottom: 0.5rem; right: 0.5rem;
+      font-family: var(--font-mono); font-size: 0.55rem;
+      color: #5a3a1a; background: rgba(255,255,255,0.5);
+      padding: 0.1rem 0.3rem;
+    }
+
+    .photo-desc {
+      font-size: 0.8rem; color: #666; line-height: 1.8;
+      margin-bottom: 2rem; opacity: 0; transition: opacity 2s;
+    }
+    .photo-desc.visible { opacity: 1; }
+
+    .back-text {
+      font-family: var(--font-handwriting); font-size: 1rem;
+      color: #d4a574; letter-spacing: 0.15em;
+      opacity: 0; transition: opacity 2s; margin-bottom: 1rem;
+    }
+    .back-text.visible { opacity: 1; }
+
+    .final-line {
+      font-size: 0.75rem; color: #30363d; line-height: 2;
+      opacity: 0; transition: opacity 2s;
+    }
+    .final-line.visible { opacity: 1; }
+
+    .restart-link { display: none; margin-top: 2rem; font-size: 0.75rem; }
+    .restart-link.visible { display: block; }
+    .restart-link a { color: #484f58; }
+  </style>
+</head>
+<body data-page="ending-hidden">
+
+  <div class="container">
+    <div class="intro-text" id="intro-text">
+      你把阿水照片的EXIF一条条翻下来，<br>
+      有一张不在相册里，压在最底下。<br>
+      他藏得很深。<br><br>
+      大概只想给最后一个找到的人看。
+    </div>
+
+    <div class="photo-frame" id="photo">
+      <div class="photo-inner">
+        <div class="photo-figure">
+          <div class="fig-head"></div>
+          <div class="fig-body"></div>
+        </div>
+        <div class="photo-water"></div>
+        <div class="photo-date">2024.08.19 03:46</div>
+      </div>
+    </div>
+
+    <div class="photo-desc" id="photo-desc">
+      一个人站在海里，背对镜头，水到腰。<br>
+      头稍微偏过来一点，脸看不清。<br>
+      身形像阿水。<br>
+      拍这张是 03:46。再过去一分钟，他的账号最后一次登录。
+    </div>
+
+    <div class="back-text" id="back-text">
+      照片背面有一行字：<br>
+      "你看见我了。谢谢。"
+    </div>
+
+    <div class="final-line" id="final-line">
+      隐藏结局：你看见我了<br>
+      <span style="font-size: 0.65rem; color: #30363d;">
+        他那一个月的路，你一步一步全走完了。他早知道会有人来。
+      </span>
+    </div>
+
+    <div class="restart-link" id="restart-link">
+      <a href="index.html">下一回，走进去。</a>
+    </div>
+  </div>
+
+  <script src="js/state.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      GameState.set('ending', 'hidden');
+
+      setTimeout(() => document.getElementById('intro-text').classList.add('visible'), 1500);
+      setTimeout(() => document.getElementById('photo').classList.add('visible'), 5000);
+      setTimeout(() => document.getElementById('photo-desc').classList.add('visible'), 8000);
+      setTimeout(() => document.getElementById('back-text').classList.add('visible'), 12000);
+      setTimeout(() => document.getElementById('final-line').classList.add('visible'), 16000);
+      setTimeout(() => document.getElementById('restart-link').classList.add('visible'), 20000);
+    });
+  </script>
+</body>
+</html>

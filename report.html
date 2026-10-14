@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>私信 — 阿月</title>
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/social-app.css">
+  <style>
+    body { padding-bottom: 8.5rem; }
+
+    .chat {
+      max-width: 620px;
+      margin: 0 auto;
+      padding: 1rem 0.75rem 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+    }
+
+    .day-sep {
+      text-align: center;
+      font-family: var(--font-mono);
+      font-size: 0.62rem;
+      color: #5b7083;
+      margin: 0.4rem 0 0.7rem;
+      letter-spacing: 0.05em;
+    }
+
+    .msg-row {
+      display: flex;
+      flex-direction: column;
+      max-width: 82%;
+    }
+    .msg-row.from { align-self: flex-start; align-items: flex-start; }
+    .msg-row.me { align-self: flex-end; align-items: flex-end; }
+
+    .dm-bubble {
+      max-width: 100%;
+      padding: 0.55rem 0.8rem;
+      border-radius: 16px;
+      font-size: 0.87rem;
+      line-height: 1.65;
+      word-break: break-word;
+    }
+    .msg-row.from .dm-bubble {
+      background: #2a3a4a;
+      border-bottom-left-radius: 4px;
+    }
+    .msg-row.me .dm-bubble {
+      background: #1d9bf0;
+      color: #fff;
+      border-bottom-right-radius: 4px;
+    }
+    .dm-bubble .stamp {
+      display: block;
+      font-size: 0.58rem;
+      color: rgba(255,255,255,0.38);
+      margin-top: 0.25rem;
+      text-align: right;
+      font-family: var(--font-mono);
+    }
+
+    .dm-bubble.typing { padding: 0.7rem 0.85rem; }
+    .dm-bubble.typing .dots { display: inline-flex; gap: 0.22rem; }
+    .dm-bubble.typing .dots i {
+      width: 5px; height: 5px; border-radius: 50%;
+      background: #8899a6; display: block;
+      animation: blink 1.1s ease infinite;
+    }
+    .dm-bubble.typing .dots i:nth-child(2) { animation-delay: 0.16s; }
+    .dm-bubble.typing .dots i:nth-child(3) { animation-delay: 0.32s; }
+    @keyframes blink {
+      0%, 60%, 100% { opacity: 0.25; transform: translateY(0); }
+      30% { opacity: 1; transform: translateY(-2px); }
+    }
+
+    /* 附件气泡 */
+    .file-card {
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+      background: #1b2733;
+      border: 1px solid #2f3e4e;
+      border-radius: 10px;
+      padding: 0.5rem 0.65rem;
+      margin-top: 0.3rem;
+      max-width: 100%;
+    }
+    .msg-row.me .file-card { background: rgba(255,255,255,0.13); border-color: rgba(255,255,255,0.22); }
+    .file-card .fi { font-size: 1.05rem; filter: grayscale(1) opacity(0.75); }
+    .file-card .fn {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: #cdd9e5;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .msg-row.me .file-card .fn { color: #fff; }
+    .file-card .fs {
+      font-size: 0.6rem;
+      color: #5b7083;
+      font-family: var(--font-mono);
+      margin-left: auto;
+      flex-shrink: 0;
+    }
+    .msg-row.me .file-card .fs { color: rgba(255,255,255,0.62); }
+
+    /* 输入区 */
+    .composer {
+      position: fixed;
+      left: 0; right: 0; bottom: 0;
+      z-index: 500;
+      background: #1e2d3d;
+      border-top: 1px solid #38444d;
+      padding: 0.45rem 0.6rem calc(0.45rem + env(safe-area-inset-bottom));
+    }
+    .composer-inner { max-width: 620px; margin: 0 auto; }
+
+    .input-row {
+      display: flex;
+      align-items: flex-end;
+      gap: 0.4rem;
+    }
+    .attach-btn {
+      flex-shrink: 0;
+      width: 2.1rem; height: 2.1rem;
+      border: 1px solid #2f3e4e;
+      border-radius: 50%;
+      background: #15202b;
+      color: #8899a6;
+      font-size: 0.95rem;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .attach-btn:hover { color: #1d9bf0; border-color: #1d9bf0; }
+
+    #draft {
+      flex: 1;
+      min-height: 2.1rem;
+      max-height: 7rem;
+      background: #15202b;
+      border: 1px solid #2f3e4e;
+      border-radius: 20px;
+      color: #e7e9ea;
+      padding: 0.55rem 0.85rem;
+      font-size: 0.84rem;
+      font-family: inherit;
+      line-height: 1.4;
+      resize: none;
+      outline: none;
+    }
+    #draft:focus { border-color: #3d5468; }
+    #draft::placeholder { color: #5b7083; }
+
+    .send-btn {
+      flex-shrink: 0;
+      height: 2.1rem;
+      padding: 0 1.15rem;
+      background: #1d9bf0;
+      border: none;
+      border-radius: 20px;
+      color: #fff;
+      font-size: 0.82rem;
+      font-family: inherit;
+      cursor: pointer;
+    }
+    .send-btn:hover { background: #1a91da; }
+    .send-btn:disabled { background: #2f3e4e; color: #5b7083; cursor: not-allowed; }
+
+    /* 附件抽屉 */
+    .drawer {
+      display: none;
+      border: 1px solid #2f3e4e;
+      border-radius: 10px;
+      background: #15202b;
+      margin-bottom: 0.45rem;
+      max-height: 12rem;
+      overflow-y: auto;
+    }
+    .drawer.show { display: block; }
+    .drawer-label {
+      font-family: var(--font-mono);
+      font-size: 0.58rem;
+      letter-spacing: 0.12em;
+      color: #5b7083;
+      padding: 0.5rem 0.7rem 0.25rem;
+    }
+    .pick {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.42rem 0.7rem;
+      cursor: pointer;
+      user-select: none;
+      border-top: 1px solid #223040;
+    }
+    .pick:hover { background: #1a2734; }
+    .pick .fi { font-size: 0.95rem; filter: grayscale(1) opacity(0.75); }
+    .pick .fn { font-family: var(--font-mono); font-size: 0.72rem; color: #cdd9e5; }
+    .pick .fs { font-size: 0.6rem; color: #5b7083; font-family: var(--font-mono); margin-left: auto; }
+    .pick.on .fn { color: #1d9bf0; }
+    .pick.on::after { content: '\2713'; color: #1d9bf0; font-size: 0.75rem; }
+    .drawer-foot {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.42rem 0.7rem;
+      border-top: 1px solid #2f3e4e;
+      font-size: 0.68rem;
+      color: #5b7083;
+    }
+    .drawer-foot span { cursor: pointer; }
+    .drawer-foot .ok { color: #1d9bf0; }
+  </style>
+</head>
+<body data-page="report-chat">
+
+  <div class="social-header">
+    <a class="back" href="index.html">&larr; 返回论坛</a>
+    <div class="profile-name">阿月</div>
+    <div class="post-count">在线</div>
+  </div>
+
+  <div class="chat" id="chat"></div>
+
+  <div class="composer" id="composer" style="display:none;">
+    <div class="composer-inner">
+      <div class="drawer" id="drawer">
+        <div class="drawer-label">从电脑里选</div>
+        <div id="pick-list"></div>
+        <div class="drawer-foot">
+          <span id="clear-picks">取消</span>
+          <span class="ok" id="attach-ok">添加 <span id="pick-count">0</span></span>
+        </div>
+      </div>
+      <div class="input-row">
+        <button class="attach-btn" id="attach" title="发送文件">&#128206;</button>
+        <textarea id="draft" rows="1" placeholder="想说什么就写一句"></textarea>
+        <button class="send-btn" id="send" disabled>发送</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/state.js"></script>
+  <script>
+    const FILES = {
+      diary4:   { label: '笔记本_第4页.jpg',         size: '2.0 MB' },
+      diary5:   { label: '笔记本_第5页.jpg',         size: '2.1 MB' },
+      diary6:   { label: '笔记本_第6页.jpg',         size: '2.4 MB' },
+      cand:     { label: 'candidates_0813.wav',      size: '12:30'  },
+      finalrec: { label: 'final_recording_0817.wav', size: '6:18'   },
+      bookpg:   { label: 'IMG_20240815_2347.jpg',    size: '4.8 MB' },
+      sitehist: { label: '官网_历届大典记录.txt',      size: '6 KB'   },
+      sitedm:   { label: '官网_参观须知.txt',         size: '4 KB'   },
+      dm18:     { label: '私信_八月十八.png',         size: '180 KB' },
+      op1:      { label: '论坛_1楼.png',             size: '220 KB' },
+      ph16:     { label: 'photo_16_last_photo.png',  size: '3.1 MB' }
+    };
+    const FILE_ICONS = { jpg: '&#128247;', png: '&#128247;', wav: '&#127911;', txt: '&#128196;' };
+
+    const clock = { h: 21, m: 4 };
+    function hhmm() {
+      const p = n => String(n).padStart(2, '0');
+      return `${p(clock.h)}:${p(clock.m)}`;
+    }
+    function tick(mins) {
+      clock.m += mins;
+      while (clock.m >= 60) { clock.m -= 60; clock.h = (clock.h + 1) % 24; }
+    }
+
+    const chat = document.getElementById('chat');
+    const composer = document.getElementById('composer');
+    const drawer = document.getElementById('drawer');
+    const draft = document.getElementById('draft');
+    const sendBtn = document.getElementById('send');
+
+    const sleep = ms => new Promise(res => setTimeout(res, ms));
+    function toBottom() {
+      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    }
+    function el(html) {
+      const t = document.createElement('template');
+      t.innerHTML = html.trim();
+      return t.content.firstElementChild;
+    }
+    function iconOf(label) {
+      return FILE_ICONS[label.split('.').pop().toLowerCase()] || '&#128196;';
+    }
+    function fileCard(key) {
+      const f = FILES[key];
+      return el(`
+        <div class="file-card">
+          <span class="fi">${iconOf(f.label)}</span>
+          <span class="fn">${f.label}</span>
+          <span class="fs">${f.size}</span>
+        </div>
+      `);
+    }
+
+    async function herSay(texts) {
+      for (const t of texts) {
+        const row = el('<div class="msg-row from"><div class="dm-bubble typing"><span class="dots"><i></i><i></i><i></i></span></div></div>');
+        chat.appendChild(row);
+        toBottom();
+        await sleep(Math.min(1600, 520 + t.length * 25));
+        row.firstElementChild.className = 'dm-bubble';
+        row.firstElementChild.innerHTML = `${t}<span class="stamp">${hhmm()}</span>`;
+        tick(Math.ceil(t.length / 20) + 1);
+        toBottom();
+        await sleep(260);
+      }
+    }
+
+    function mineSay(text, fileKeys) {
+      const row = el('<div class="msg-row me"></div>');
+      const bubble = el(`<div class="dm-bubble"><span class="txt">${text || ''}</span><span class="stamp">${hhmm()}</span></div>`);
+      row.appendChild(bubble);
+      (fileKeys || []).forEach(k => bubble.insertBefore(fileCard(k), bubble.lastElementChild));
+      chat.appendChild(row);
+      tick(Math.ceil((text || '').length / 18) + 1);
+      toBottom();
+    }
+
+    const FLAVOR = [
+      { re: /阿水|你弟|弟弟/,       then: ['你叫他阿水就行。家里人这么叫。'] },
+      { re: /埕尾/,                 then: ['这个地名我现在一看就烦。前阵子搜过一回，出来的是几款二手房。'] },
+      { re: /对不起|抱歉|不好意思/,     then: ['不用。你不用跟我讲这个。'] },
+      { re: /会好的|别难过|节哀|想开/,   then: ['嗯。这话我这半个月听了好几回。都挺好，就是听完没地方放。'] },
+      { re: /报警|警察|立案|律师|证据/,  then: ['报过。笔录做了两回。律师说先等。'] },
+      { re: /海|滩|水/,            then: ['我到现在不敢看水。刷到海边那些都直接划走。'] },
+      { re: /鬼|凶手|杀/,           then: ['这些我不看。他在的时候我也不看。'] },
+      { re: /谢谢|辛苦/,            then: ['该我说这句。'] },
+      { re: /村|名单|红纸|庙/,       then: ['那边的人我一个都不认识。你要认出谁了，跟我说一声。'] },
+      { re: /日记|录音|照片|簿/,      then: ['他写东西喜欢把要紧的话夹在平常话里，不看两三遍抓不出来。'] }
+    ];
+
+    const QUEUE = [
+      () => herSay([
+        '在。你说的这些，我昨夜又去翻了一遍。',
+        '他去年过年那会儿问我，网上那些人要是看见他写的东西，会不会有人帮他。',
+        '我说不会的。没人看这些。',
+        '这句我说错了。'
+      ]),
+      () => herSay([
+        '我一直当他拍着玩。他什么东西都往镜头里塞。',
+        '律师说人没有证据，案子就挂着。挂着就挂着吧。'
+      ]),
+      () => herSay([
+        '你手上要是还有他别的录像，发我一份。我这儿只剩这些了。'
+      ]),
+      () => herSay([
+        '我这两天睡得比以前多。以前一到三点就醒，醒了就去翻他那个账号。',
+        '那个号你们还能登。密码我在帖子里写过。'
+      ]),
+      () => herSay([
+        '不聊了。我今天要理的东西理完了。',
+        '谢谢你把这些看完。'
+      ])
+    ];
+
+    let turn = 0;
+    let busy = false;
+    let lastSaid = '';
+
+    function syncSend() {
+      sendBtn.disabled = busy || (draft.value.trim() === '' && picked.size === 0);
+    }
+
+    async function reply(files) {
+      busy = true;
+      syncSend();
+      const said = lastSaid;
+
+      if (turn < QUEUE.length) {
+        await QUEUE[turn]();
+        turn++;
+      }
+
+      const hit = FLAVOR.find(f => f.re.test(said));
+      if (hit) await herSay(hit.then);
+      if (files && files.length) await herSay(['收到了。这些我都存两份，一份发给律师。']);
+      if (!hit && !(files && files.length) && turn >= QUEUE.length) {
+        if (said.length > 60) await herSay(['你这条长，我分了两次才看完。']);
+        else await herSay(['嗯。我先记下。']);
+      }
+
+      busy = false;
+      syncSend();
+      draft.focus();
+    }
+
+    // 附件抽屉
+    const picked = new Set();
+    const pickList = document.getElementById('pick-list');
+    Object.keys(FILES).forEach(k => {
+      const f = FILES[k];
+      const row = el(`<div class="pick"><span class="fi">${iconOf(f.label)}</span><span class="fn">${f.label}</span><span class="fs">${f.size}</span></div>`);
+      row.addEventListener('click', () => {
+        if (picked.has(k)) { picked.delete(k); row.classList.remove('on'); }
+        else { picked.add(k); row.classList.add('on'); }
+        document.getElementById('pick-count').textContent = picked.size;
+        syncSend();
+      });
+      pickList.appendChild(row);
+    });
+    function clearPicks() {
+      picked.clear();
+      pickList.querySelectorAll('.pick').forEach(p => p.classList.remove('on'));
+      document.getElementById('pick-count').textContent = '0';
+    }
+
+    document.getElementById('attach').addEventListener('click', () => drawer.classList.toggle('show'));
+    document.getElementById('clear-picks').addEventListener('click', () => {
+      clearPicks();
+      drawer.classList.remove('show');
+      syncSend();
+    });
+    document.getElementById('attach-ok').addEventListener('click', () => {
+      drawer.classList.remove('show');
+      syncSend();
+    });
+
+    draft.addEventListener('input', () => {
+      draft.style.height = 'auto';
+      draft.style.height = Math.min(draft.scrollHeight, 112) + 'px';
+      syncSend();
+    });
+    draft.addEventListener('keydown', e => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        if (!sendBtn.disabled) sendBtn.click();
+      }
+    });
+
+    sendBtn.addEventListener('click', () => {
+      const text = draft.value.trim();
+      const files = [...picked];
+      if (busy || (!text && !files.length)) return;
+      lastSaid = text;
+      draft.value = '';
+      draft.style.height = 'auto';
+      clearPicks();
+      drawer.classList.remove('show');
+      mineSay(text, files);
+      syncSend();
+      setTimeout(() => reply(files), 340);
+    });
+
+    (async function start() {
+      chat.appendChild(el('<div class="day-sep">2024-09-14</div>'));
+      await herSay([
+        '你好。我是林小月。',
+        '你说你去看了他留下的那些东西。',
+        '他拍那种没人住的村子，拍了三年。这回去的地方我连名字都没听过。'
+      ]);
+      await sleep(1200);
+      await herSay([
+        '主楼里我就给了一个账号。别的我不会弄，你们自己点开看，我一个一个讲也讲不来。',
+        '你要是看明白了，跟我说一声就行。讲不清也没关系。'
+      ]);
+      composer.style.display = 'block';
+      GameState.recordChoice('dm_opened', true);
+      toBottom();
+      draft.focus();
+    })();
+  </script>
+</body>
+</html>

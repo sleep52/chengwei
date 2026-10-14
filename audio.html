@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>阿水的录音文件</title>
+  <link rel="stylesheet" href="css/base.css">
+  <style>
+    body { background: #0d1117; color: #c9d1d9; font-family: var(--font-body); min-height: 100vh; padding-bottom: 4rem; }
+
+    .audio-header {
+      background: #161b22; padding: 1rem 1.5rem;
+      display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 1px solid #30363d; position: sticky; top: 0; z-index: 10;
+    }
+    .audio-header .back { color: #c9d1d9; text-decoration: none; font-size: 0.9rem; }
+    .audio-header h2 { font-size: 1rem; }
+    .audio-header .count { font-size: 0.8rem; color: #8b949e; }
+
+    .audio-hint {
+      background: #161b22; padding: 0.75rem 1.5rem;
+      font-size: 0.75rem; color: #8b949e; border-bottom: 1px solid #21262d;
+    }
+
+    .audio-list { padding: 0.5rem; }
+
+    .audio-item {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 0.5rem;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .audio-item:hover { border-color: #58a6ff; background: #1c2128; }
+    .audio-item.locked { opacity: 0.5; border-color: #8b0000; }
+    .audio-item.locked:hover { border-color: #8b0000; cursor: not-allowed; }
+
+    .audio-item .audio-top {
+      display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;
+    }
+
+    .audio-item .play-icon {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: #21262d; display: flex; align-items: center; justify-content: center;
+      font-size: 0.9rem; flex-shrink: 0;
+    }
+
+    .audio-item .audio-info { flex: 1; }
+    .audio-item .audio-name { font-size: 0.9rem; font-weight: 600; color: #e6edf3; }
+    .audio-item .audio-meta { font-size: 0.7rem; color: #8b949e; margin-top: 0.2rem; }
+
+    .audio-item .audio-duration {
+      font-family: var(--font-mono); font-size: 0.8rem; color: #8b949e;
+    }
+
+    .audio-item .lock-icon { color: #8b0000; font-size: 0.8rem; margin-left: 0.5rem; }
+
+    /* Waveform */
+    .waveform {
+      display: flex; align-items: center; gap: 2px;
+      height: 30px; margin-top: 0.5rem;
+    }
+    .waveform .bar {
+      width: 3px; background: #30363d; border-radius: 2px;
+      transition: background 0.3s;
+    }
+    .waveform .bar.active { background: #58a6ff; }
+
+    /* Player */
+    .player-overlay {
+      display: none;
+      position: fixed; bottom: 0; left: 0; right: 0;
+      background: #161b22;
+      border-top: 1px solid #30363d;
+      padding: 1rem 1.5rem;
+      z-index: 20;
+    }
+    .player-overlay.active { display: block; }
+
+    .player-top {
+      display: flex; align-items: center; gap: 1rem; margin-bottom: 0.75rem;
+    }
+
+    .player-top .player-name { font-size: 0.85rem; font-weight: 600; flex: 1; }
+    .player-top .player-time { font-family: var(--font-mono); font-size: 0.75rem; color: #8b949e; }
+
+    .player-controls {
+      display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem;
+    }
+
+    .player-btn {
+      background: none; border: none; color: #c9d1d9;
+      font-size: 1.2rem; cursor: pointer; padding: 0.5rem;
+    }
+    .player-btn:hover { color: #58a6ff; }
+    .player-btn.play-btn { font-size: 1.5rem; }
+
+    .progress-bar {
+      width: 100%; height: 4px; background: #21262d;
+      border-radius: 2px; cursor: pointer; position: relative;
+    }
+    .progress-fill {
+      height: 100%; background: #58a6ff; border-radius: 2px;
+      width: 0%; transition: width 0.3s;
+    }
+
+    /* Transcript */
+    .transcript {
+      display: none;
+      background: #0d1117;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+      padding: 1rem;
+      margin-top: 0.5rem;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+    .transcript.active { display: block; }
+
+    .transcript .line {
+      font-size: 0.8rem; color: #8b949e;
+      padding: 0.3rem 0;
+      border-bottom: 1px solid #21262d;
+      opacity: 0;
+      transition: opacity 0.5s;
+    }
+    .transcript .line.visible { opacity: 1; }
+    .transcript .line .timestamp {
+      font-family: var(--font-mono); font-size: 0.65rem; color: #484f58; margin-right: 0.5rem;
+    }
+    .transcript .line .text { color: #c9d1d9; }
+    .transcript .line .text.ambient { color: #484f58; font-style: italic; }
+    .transcript .line .text.key { color: #f85149; font-weight: 600; }
+
+    /* Password modal */
+    .password-modal {
+      display: none;
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.8);
+      z-index: 600;
+      align-items: center; justify-content: center;
+    }
+    .password-modal.active { display: flex; }
+
+    .password-box {
+      background: #161b22; border: 1px solid #30363d;
+      border-radius: 12px; padding: 2rem; max-width: 360px; width: 90%;
+      text-align: center;
+    }
+    .password-box h3 { font-size: 1rem; margin-bottom: 0.5rem; color: #e6edf3; }
+    .password-box p { font-size: 0.8rem; color: #8b949e; margin-bottom: 1.5rem; }
+    .password-box input {
+      width: 100%; padding: 0.75rem; background: #0d1117;
+      border: 1px solid #30363d; border-radius: 6px;
+      color: #c9d1d9; font-size: 0.9rem; text-align: center;
+      font-family: var(--font-mono);
+      margin-bottom: 1rem;
+    }
+    .password-box input:focus { outline: none; border-color: #58a6ff; }
+    .password-box .submit-btn {
+      background: #238636; color: #fff; border: none;
+      padding: 0.6rem 2rem; border-radius: 6px; cursor: pointer;
+      font-size: 0.85rem;
+    }
+    .password-box .submit-btn:hover { background: #2ea043; }
+    .password-box .error { color: #f85149; font-size: 0.75rem; margin-top: 0.5rem; display: none; }
+    .password-box .hint { color: #8b949e; font-size: 0.7rem; margin-top: 0.75rem; }
+
+  </style>
+</head>
+<body data-page="audio">
+
+  <div class="audio-header">
+    <a class="back" href="social.html">← 返回阿水的账号</a>
+    <h2>录音文件</h2>
+    <div class="count">8 个文件</div>
+  </div>
+
+  <div class="audio-hint">
+    有些文件设了密码。密码在阿水别的东西里，得自己对。
+  </div>
+
+  <div class="audio-list" id="audio-list"></div>
+
+  <!-- Player -->
+  <div class="player-overlay" id="player">
+    <div class="player-top">
+      <div class="player-name" id="player-name">—</div>
+      <div class="player-time"><span id="player-current">0:00</span> / <span id="player-total">0:00</span></div>
+    </div>
+    <div class="player-controls">
+      <button class="player-btn" onclick="skipBack()">⏮</button>
+      <button class="player-btn play-btn" id="play-btn" onclick="togglePlay()">▶</button>
+      <button class="player-btn" onclick="skipForward()"></button>
+      <button class="player-btn" id="transcript-btn" onclick="toggleTranscript()" style="margin-left:auto;font-size:0.8rem;">文字</button>
+    </div>
+    <div class="progress-bar" onclick="seekAudio(event)">
+      <div class="progress-fill" id="progress-fill"></div>
+    </div>
+    <div class="transcript" id="transcript"></div>
+  </div>
+
+  <!-- Password Modal -->
+  <div class="password-modal" id="password-modal">
+    <div class="password-box">
+      <h3>加密文件</h3>
+      <p>这个文件设了密码，直接放不出来。<br>阿水日记里写过那个日子。</p>
+      <input type="text" id="password-input" placeholder="输入密码" autocomplete="off">
+      <br>
+      <button class="submit-btn" onclick="checkPassword()">解锁</button>
+      <div class="error" id="password-error">密码错误</div>
+      <div class="hint">日记里有个农历日期。换算成公历再试试。</div>
+    </div>
+  </div>
+
+
+  
+  <script src="js/state.js"></script>
+  <script>
+    const audioFiles = [
+      { name: 'village_morning_0802.wav', desc: '村里的早上', duration: '3:24', date: '2024.08.02', locked: false,
+        transcript: [
+          { t: '0:00', text: '（海浪声，远处鸟鸣）', ambient: true },
+          { t: '0:15', text: '（脚步声，踩在沙滩上）', ambient: true },
+          { t: '0:30', text: '（阿水轻声）第一天。到了。', text: '第一天。到了。' },
+          { t: '1:00', text: '（海风，远处有人说话，听不清）', ambient: true },
+          { t: '2:00', text: '（长时间沉默，只有海浪）', ambient: true },
+          { t: '3:00', text: '（录音结束）', ambient: true },
+        ]
+      },
+      { name: 'temple_approach_0805.wav', desc: '靠近庙宇', duration: '5:12', date: '2024.08.05', locked: false,
+        transcript: [
+          { t: '0:00', text: '（脚步声，石板路）', ambient: true },
+          { t: '0:30', text: '（庙门吱呀声）', ambient: true },
+          { t: '1:00', text: '（里面有人在说话。声音很低。[听不清]）', ambient: true },
+          { t: '1:30', text: '（阿水压低声音）他们在准备什么……', text: '他们在准备什么……' },
+          { t: '2:00', text: '（突然安静。[杂音]脚步声靠近。）', ambient: true },
+          { t: '2:10', text: '（阿水急促呼吸。[录音抖动]跑开。）', ambient: true },
+          { t: '3:00', text: '（录音中断）', ambient: true },
+        ]
+      },
+      { name: 'sea_night_0808.wav', desc: '晚上海边', duration: '8:45', date: '2024.08.08', locked: false,
+        transcript: [
+          { t: '0:00', text: '（深夜海浪。潮水很大。）', ambient: true },
+          { t: '1:00', text: '（远处有歌声。[听不清]像是童谣。）', ambient: true },
+          { t: '3:00', text: '（阿水）这个调子……我来之前在网上那个帖子里见过有人提。', text: '这个调子……我来之前在网上那个帖子里见过有人提。' },
+          { t: '5:00', text: '（童谣声变大。[突然中断]）', ambient: true },
+          { t: '5:30', text: '（沉默。只有潮水。）', ambient: true },
+          { t: '8:00', text: '（阿水，声音发抖）退这么远……白天我来拍过，那排礁石还在水底下。', text: '退这么远……白天我来拍过，那排礁石还在水底下。' },
+        ]
+      },
+      { name: 'candidates_0813.wav', desc: '候选人', duration: '12:30', date: '2024.08.13', locked: false,
+        transcript: [
+          { t: '0:00', text: '（阿水）五个人。我数过了，今年五个。', text: '五个人。我数过了，今年五个。' },
+          { t: '2:00', text: '（远处人声。[集市噪音]）', ambient: true },
+          { t: '4:00', text: '（阿水）第一个，红纸上排头那个，陈家的。我在码头问了一下午，三十好几，天天扛货。', text: '第一个，红纸上排头那个，陈家的。我在码头问了一下午，三十好几，天天扛货。' },
+          { t: '6:00', text: '（阿水）第二个，卖鱼的阿花姐。她男人前年没在海上。这是小卖部那边告诉我的。', text: '第二个，卖鱼的阿花姐。她男人前年没在海上。这是小卖部那边告诉我的。' },
+          { t: '8:00', text: '（阿水）第三个……[听不清]……穿得不像村里人，外来的？', text: '第三个……我不认识。穿得不像村里人，外来的？' },
+          { t: '10:00', text: '（阿水沉默很久）第四个是林阿伯的孙子。跟我差不多大，上回还找我借过充电器。', text: '第四个是林阿伯的孙子。跟我差不多大，上回还找我借过充电器。' },
+          { t: '11:00', text: '（阿水，声音很低）第五个……是我。', text: '第五个……是我。' },
+          { t: '12:00', text: '（录音结束）', ambient: true },
+        ]
+      },
+      { name: 'temple_night_0811.wav', desc: '庙内夜录', duration: '15:20', date: '2024.08.11', locked: false,
+        transcript: [
+          { t: '0:00', text: '（深夜。庙内。[回音很重]）', ambient: true },
+          { t: '1:00', text: '（有人在念。不是经文。[听不清具体内容]是名字。）', ambient: true },
+          { t: '2:00', text: '（声音）陈……黄……林……[后续听不清]', text: '陈……黄……林……' },
+          { t: '3:00', text: '（阿水）他们在点名。还潮簿上的名字。', text: '他们在点名。还潮簿上的名字。' },
+          { t: '5:00', text: '（念诵声变大。节奏加快。[录音失真]）', ambient: true },
+          { t: '7:00', text: '（阿水）最后一个名字……他们跳过了。', text: '最后一个名字……他们跳过了。' },
+          { t: '8:00', text: '（沉默）', ambient: true },
+          { t: '10:00', text: '（阿水）因为还没到日子。七月初三。', text: '因为还没到日子。七月初三。' },
+          { t: '12:00', text: '（脚步声。阿水离开。）', ambient: true },
+        ]
+      },
+      { name: 'final_recording_0817.wav', desc: '最后的录音', duration: '6:18', date: '2024.08.17', locked: false,
+        transcript: [
+          { t: '0:00', text: '（海边。风很大。[录音有抖动]）', ambient: true },
+          { t: '0:30', text: '（阿水，平静）要有人在听这段。那我大概已经不在了。', text: '要有人在听这段。那我大概已经不在了。' },
+          { t: '1:30', text: '（阿水）我不是被强迫的。是我自己选的。', text: '我不是被强迫的。是我自己选的。' },
+          { t: '2:30', text: '（阿水）我就是想知道，被海收走是什么[听不清]……', text: '我就是想知道，被海收走是什么感觉。' },
+          { t: '3:30', text: '（阿水）总得让外头有人知道这事。', text: '总得让外头有人知道这事。' },
+          { t: '4:30', text: '（阿水，声音变低）姐。对不起。', text: '姐。对不起。' },
+          { t: '5:00', text: '（阿水）但你要知道。所以我把这些都留下来了。', text: '但你要知道。所以我把这些都留下来了。' },
+          { t: '5:30', text: '（脚步声。走向海里。水声。[后续模糊]）', ambient: true },
+          { t: '6:00', text: '（录音结束）', ambient: true },
+        ]
+      },
+      { name: 'ENCRYPTED_0819.wav', desc: '加密文件', duration: '4:47', date: '2024.08.19', locked: true,
+        transcript: [
+          { t: '0:00', text: '（潮水声。很大。[录音质量差]）', ambient: true },
+          { t: '0:30', text: '（阿水，声音很轻）是我。簿子上圈的是我。', text: '是我。簿子上圈的是我。' },
+          { t: '1:00', text: '（阿水）我没有逃。', text: '我没有逃。' },
+          { t: '1:30', text: '（远处有人声。很多人在岸上。[听不清说什么]）', ambient: true },
+          { t: '2:00', text: '（阿水）他们在看。没有人拦。', text: '他们在看。没有人拦。' },
+          { t: '2:30', text: '（阿水）有人笑了。说"[听不清]今年总算顺了[听不清]"。', text: '有人笑了。说"今年总算顺了"。', key: true },
+          { t: '3:00', text: '（水声。阿水走进海里。[录音抖动加剧]）', ambient: true },
+          { t: '4:00', text: '（阿水最后的话）你看见我了。谢谢。', text: '你看见我了。谢谢。', key: true },
+          { t: '4:30', text: '（潮水声。然后沉默。）', ambient: true },
+        ]
+      },
+    ];
+
+    let currentAudio = null;
+    let isPlaying = false;
+    let playProgress = 0;
+    let playInterval = null;
+    let unlocked = GameState.get('audioUnlocked') || false;
+
+    function renderList() {
+      const list = document.getElementById('audio-list');
+      audioFiles.forEach((file, i) => {
+        const item = document.createElement('div');
+        item.className = 'audio-item' + (file.locked && !unlocked ? ' locked' : '');
+
+        const bars = Array.from({length: 30}, () => Math.random() * 25 + 5);
+        const waveformHtml = bars.map(h => `<div class="bar" style="height:${h}px"></div>`).join('');
+
+        item.innerHTML = `
+          <div class="audio-top">
+            <div class="play-icon">${file.locked && !unlocked ? '🔒' : '▶'}</div>
+            <div class="audio-info">
+              <div class="audio-name">${file.name}${file.locked && !unlocked ? '<span class="lock-icon"></span>' : ''}</div>
+              <div class="audio-meta">${file.desc} · ${file.date}</div>
+            </div>
+            <div class="audio-duration">${file.duration}</div>
+          </div>
+          <div class="waveform">${waveformHtml}</div>
+        `;
+
+        item.addEventListener('click', () => {
+          if (file.locked && !unlocked) {
+            openPasswordModal();
+          } else {
+            playAudio(i);
+          }
+        });
+
+        list.appendChild(item);
+      });
+    }
+
+    function playAudio(index) {
+      currentAudio = index;
+      const file = audioFiles[index];
+
+      document.getElementById('player-name').textContent = file.name;
+      document.getElementById('player-total').textContent = file.duration;
+      document.getElementById('player-current').textContent = '0:00';
+      document.getElementById('progress-fill').style.width = '0%';
+      document.getElementById('player').classList.add('active');
+
+      // Build transcript
+      const transcriptEl = document.getElementById('transcript');
+      transcriptEl.innerHTML = '';
+      file.transcript.forEach((line, i) => {
+        const div = document.createElement('div');
+        div.className = 'line';
+        div.innerHTML = `<span class="timestamp">[${line.t}]</span><span class="text ${line.ambient ? 'ambient' : ''} ${line.key ? 'key' : ''}">${line.text}</span>`;
+        transcriptEl.appendChild(div);
+      });
+
+      GameState.set('audioPlayed_' + index, true);
+    }
+
+    function togglePlay() {
+      if (isPlaying) {
+        isPlaying = false;
+        document.getElementById('play-btn').textContent = '▶';
+        clearInterval(playInterval);
+      } else {
+        isPlaying = true;
+        document.getElementById('play-btn').textContent = '⏸';
+        simulatePlay();
+      }
+    }
+
+    function simulatePlay() {
+      const file = audioFiles[currentAudio];
+      const parts = file.duration.split(':');
+      const totalSec = parseInt(parts[0]) * 60 + parseInt(parts[1]);
+
+      playInterval = setInterval(() => {
+        playProgress += 0.5;
+        if (playProgress >= totalSec) {
+          playProgress = totalSec;
+          isPlaying = false;
+          document.getElementById('play-btn').textContent = '▶';
+          clearInterval(playInterval);
+        }
+
+        const pct = (playProgress / totalSec) * 100;
+        document.getElementById('progress-fill').style.width = pct + '%';
+
+        const min = Math.floor(playProgress / 60);
+        const sec = Math.floor(playProgress % 60);
+        document.getElementById('player-current').textContent = min + ':' + sec.toString().padStart(2, '0');
+
+        // Reveal transcript lines
+        const lines = document.querySelectorAll('.transcript .line');
+        const lineThreshold = totalSec / lines.length;
+        lines.forEach((line, i) => {
+          if (playProgress >= i * lineThreshold) {
+            line.classList.add('visible');
+          }
+        });
+      }, 500);
+    }
+
+    function toggleTranscript() {
+      document.getElementById('transcript').classList.toggle('active');
+    }
+
+    function skipBack() { playProgress = Math.max(0, playProgress - 10); }
+    function skipForward() { playProgress += 10; }
+    function seekAudio(e) {
+      const bar = e.currentTarget;
+      const rect = bar.getBoundingClientRect();
+      const pct = (e.clientX - rect.left) / rect.width;
+      const file = audioFiles[currentAudio];
+      const parts = file.duration.split(':');
+      const totalSec = parseInt(parts[0]) * 60 + parseInt(parts[1]);
+      playProgress = pct * totalSec;
+    }
+
+    function openPasswordModal() {
+      document.getElementById('password-modal').classList.add('active');
+      document.getElementById('password-input').value = '';
+      document.getElementById('password-error').style.display = 'none';
+      document.getElementById('password-input').focus();
+    }
+
+    function checkPassword() {
+      const input = document.getElementById('password-input').value.trim();
+      // Password: 20240819 (农历七月初三 = 公历2024年8月19日)
+      if (input === '20240819' || input === '2024-08-19' || input === '七月初三') {
+        unlocked = true;
+        GameState.set('audioUnlocked', true);
+        document.getElementById('password-modal').classList.remove('active');
+        renderList();
+        playAudio(6);
+      } else {
+        document.getElementById('password-error').style.display = 'block';
+      }
+    }
+
+    document.getElementById('password-input').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') checkPassword();
+    });
+
+    renderList();
+  </script>
+</body>
+</html>

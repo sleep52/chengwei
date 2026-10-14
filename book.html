@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>还潮簿 — 潮生宫</title>
+  <link rel="stylesheet" href="css/base.css">
+  <style>
+    body { background: #1a1410; min-height: 100vh; padding-bottom: 4rem; }
+
+    .book-header {
+      background: #2a2018; padding: 1rem 1.5rem;
+      display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 1px solid #4a3828; position: sticky; top: 0; z-index: 10;
+    }
+    .book-header .back { color: #c8b89a; text-decoration: none; font-size: 0.9rem; }
+    .book-header h2 { font-size: 1rem; color: #e8dfd0; font-family: var(--font-official); }
+    .book-header .info { font-size: 0.75rem; color: #8b7b60; }
+
+    .book-intro {
+      max-width: 640px; margin: 1.5rem auto; padding: 0 1rem;
+      font-size: 0.8rem; color: #8b7b60; line-height: 1.6;
+    }
+    .book-intro .tag {
+      display: inline-block; background: #3a2a1a; color: #c8b89a;
+      padding: 0.15rem 0.5rem; border-radius: 3px; font-size: 0.7rem;
+      font-family: var(--font-mono); margin-right: 0.5rem;
+    }
+
+    .book-container {
+      max-width: 640px; margin: 0 auto; padding: 0 1rem;
+    }
+
+    .book-cover {
+      background: #3a2818;
+      border: 2px solid #5a4830;
+      padding: 3rem 2rem;
+      text-align: center;
+      position: relative;
+      margin-bottom: 2rem;
+    }
+    .book-cover::before {
+      content: '';
+      position: absolute; top: 8px; left: 8px; right: 8px; bottom: 8px;
+      border: 1px solid #6a5840;
+    }
+    .book-title {
+      font-family: var(--font-official);
+      font-size: 2rem;
+      color: #d4a574;
+      letter-spacing: 0.5em;
+      margin-bottom: 0.5rem;
+    }
+    .book-subtitle {
+      font-family: var(--font-official);
+      font-size: 0.9rem;
+      color: #8b6b4a;
+      letter-spacing: 0.3em;
+    }
+    .book-seal {
+      width: 80px; height: 80px;
+      border: 3px solid #a03020;
+      border-radius: 50%;
+      margin: 1.5rem auto 0;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-official);
+      font-size: 0.8rem;
+      color: #a03020;
+      letter-spacing: 0.1em;
+      position: relative;
+      transform: rotate(-15deg);
+      opacity: 0.7;
+    }
+    .book-seal::before {
+      content: '';
+      position: absolute; top: 4px; left: 4px; right: 4px; bottom: 4px;
+      border: 1px solid #a03020;
+      border-radius: 50%;
+    }
+
+    .book-page {
+      background: #f0e8d4;
+      padding: 2rem;
+      margin-bottom: 1.5rem;
+      position: relative;
+      box-shadow: 2px 3px 12px rgba(0,0,0,0.3);
+    }
+    .book-page::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+      background:
+        repeating-linear-gradient(
+          0deg,
+          transparent, transparent 35px,
+          rgba(180,160,130,0.15) 35px, rgba(180,160,130,0.15) 36px
+        );
+      pointer-events: none;
+    }
+
+    .book-page-title {
+      font-family: var(--font-official);
+      font-size: 1.1rem;
+      color: #2c1810;
+      text-align: center;
+      letter-spacing: 0.3em;
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid #c8b89a;
+    }
+
+    .record-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: var(--font-official);
+      font-size: 0.85rem;
+      color: #2c1810;
+      position: relative;
+    }
+    .record-table th {
+      background: #e8dfd0;
+      padding: 0.5rem;
+      text-align: center;
+      border-bottom: 2px solid #c8b89a;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+    }
+    .record-table td {
+      padding: 0.5rem;
+      border-bottom: 1px solid #e0d4b8;
+      text-align: center;
+    }
+    .record-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .record-table .struck {
+      text-decoration: line-through;
+      color: #8b6b4a;
+      opacity: 0.5;
+    }
+    .record-table .note-col {
+      font-size: 0.75rem;
+      color: #8b6b4a;
+      text-align: left;
+    }
+
+    .record-table .circled {
+      position: relative;
+      font-weight: bold;
+      color: #2c1810;
+    }
+    .record-table .circled::after {
+      content: '';
+      position: absolute;
+      top: -4px; left: -8px; right: -8px; bottom: -4px;
+      border: 2px solid #a03020;
+      border-radius: 50%;
+      transform: rotate(-5deg);
+    }
+
+    .red-annotation {
+      position: relative;
+      color: #a03020;
+      font-family: var(--font-handwriting);
+      font-size: 0.8rem;
+    }
+    .red-arrow {
+      display: inline-block;
+      color: #a03020;
+      font-family: var(--font-handwriting);
+    }
+
+    .annotation-margin {
+      position: absolute;
+      right: -10px;
+      font-family: var(--font-handwriting);
+      font-size: 0.7rem;
+      color: #a03020;
+      transform: rotate(-3deg);
+      white-space: nowrap;
+    }
+
+    .page-stamp {
+      position: absolute;
+      bottom: 1rem; right: 1rem;
+      width: 60px; height: 60px;
+      border: 2px solid rgba(160,48,32,0.3);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-official);
+      font-size: 0.6rem;
+      color: rgba(160,48,32,0.3);
+      transform: rotate(15deg);
+    }
+
+    .book-page-blank {
+      background: #f0e8d4;
+      padding: 2rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 2px 3px 12px rgba(0,0,0,0.3);
+      position: relative;
+      min-height: 200px;
+    }
+    .book-page-blank::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent, transparent 35px,
+        rgba(180,160,130,0.15) 35px, rgba(180,160,130,0.15) 36px
+      );
+      pointer-events: none;
+    }
+    .blank-line {
+      border-bottom: 1px solid #d4c5a9;
+      height: 36px;
+      position: relative;
+    }
+    .blank-line .written {
+      font-family: var(--font-handwriting);
+      font-size: 0.95rem;
+      color: #2c1810;
+      position: absolute;
+      top: 8px; left: 1rem;
+    }
+    .blank-line .written-red {
+      font-family: var(--font-handwriting);
+      font-size: 0.95rem;
+      color: #a03020;
+      position: absolute;
+      top: 8px; left: 1rem;
+    }
+    .blank-line .red-circle {
+      position: absolute;
+      top: 2px; left: 0; right: 0; bottom: 2px;
+      border: 2.5px solid #a03020;
+      border-radius: 50%;
+      transform: rotate(-3deg);
+    }
+
+    .photo-evidence {
+      max-width: 640px; margin: 2rem auto; padding: 0 1rem;
+    }
+    .evidence-frame {
+      background: #2a2018;
+      border: 1px solid #4a3828;
+      padding: 1rem;
+      text-align: center;
+    }
+    .evidence-frame .photo-placeholder {
+      background: #e8dfd0;
+      padding: 2rem;
+      font-family: var(--font-official);
+      color: #5a3a1a;
+      font-size: 0.8rem;
+      position: relative;
+      filter: sepia(0.3) contrast(0.9);
+    }
+    .evidence-frame .photo-placeholder img {
+      width: 100%; display: block;
+      filter: sepia(0.3) contrast(0.9);
+    }
+    .evidence-caption {
+      font-size: 0.75rem; color: #8b7b60;
+      font-family: var(--font-mono);
+      margin-top: 0.5rem;
+      text-align: left;
+    }
+
+    .book-footer {
+      max-width: 640px; margin: 2rem auto; padding: 0 1rem;
+      text-align: center;
+    }
+    .book-footer .note {
+      font-size: 0.75rem; color: #6b5b40;
+      font-family: var(--font-mono);
+      padding: 1rem; border: 1px dashed #5a4a38;
+    }
+
+  </style>
+</head>
+<body data-page="book">
+
+  <div class="book-header">
+    <a href="social.html" class="back">&larr; 返回阿水的账号</a>
+    <h2>还潮簿</h2>
+    <span class="info">物证 #B-001</span>
+  </div>
+
+  <div class="book-intro">
+    <span class="tag">物证 #B-001</span>
+    以下照片由阿水于2024年8月15日深夜在潮生宫后殿拍摄。照片显示一本手工装订的册子，封面题"还潮簿"，内页为毛笔与硬笔混写。部分页面有红色笔迹批注，疑为阿水本人所加。
+  </div>
+
+  <div class="book-container">
+
+    <div class="book-cover">
+      <div class="book-title">还潮簿</div>
+      <div class="book-subtitle">埕尾村潮生宫 藏</div>
+      <div class="book-seal">潮生宫印</div>
+    </div>
+
+    <div class="book-page">
+      <div class="book-page-title">历代还潮记录</div>
+      <table class="record-table">
+        <thead>
+          <tr>
+            <th>年份</th>
+            <th>姓名</th>
+            <th>备注</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>洪武二十年</td>
+            <td class="struck">林潮生</td>
+            <td class="note-col">始记。自愿。</td>
+          </tr>
+          <tr>
+            <td>永乐十八年</td>
+            <td class="struck">陈阿珠</td>
+            <td class="note-col">渔女。无抗拒。</td>
+          </tr>
+          <tr>
+            <td>正统十年</td>
+            <td class="struck">吴海生</td>
+            <td class="note-col">——</td>
+          </tr>
+          <tr>
+            <td>成化十六年</td>
+            <td class="struck">林月娥</td>
+            <td class="note-col">林氏。与始记同姓。</td>
+          </tr>
+          <tr>
+            <td>嘉靖八年</td>
+            <td class="struck">陈大勇</td>
+            <td class="note-col">——</td>
+          </tr>
+          <tr>
+            <td>万历四年</td>
+            <td class="struck">吴秋月</td>
+            <td class="note-col">——</td>
+          </tr>
+          <tr>
+            <td>崇祯十二年</td>
+            <td class="struck">林阿海</td>
+            <td class="note-col">——</td>
+          </tr>
+          <tr>
+            <td>康熙二十年</td>
+            <td class="struck">陈秀英</td>
+            <td class="note-col">——</td>
+          </tr>
+          <tr>
+            <td>乾隆四十年</td>
+            <td class="struck">吴水根</td>
+            <td class="note-col">——</td>
+          </tr>
+          <tr>
+            <td>道光十六年</td>
+            <td class="struck">林阿莲</td>
+            <td class="note-col">——</td>
+          </tr>
+          <tr>
+            <td>光绪二年</td>
+            <td class="struck">陈海生</td>
+            <td class="note-col">——</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="page-stamp">潮生宫</div>
+    </div>
+
+    <div class="book-page">
+      <div class="book-page-title">近代记录</div>
+      <table class="record-table">
+        <thead>
+          <tr>
+            <th>年份</th>
+            <th>姓名</th>
+            <th>备注</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1924年</td>
+            <td class="struck">林阿水</td>
+            <td class="note-col">同名。巧合？</td>
+          </tr>
+          <tr>
+            <td>1944年</td>
+            <td class="struck">吴秋月</td>
+            <td class="note-col">——</td>
+          </tr>
+          <tr>
+            <td>1964年</td>
+            <td class="struck">陈水根</td>
+            <td class="note-col">——</td>
+          </tr>
+          <tr>
+            <td>1984年</td>
+            <td class="struck">林秀珠</td>
+            <td class="note-col">——</td>
+          </tr>
+          <tr style="background: rgba(160,48,32,0.05);">
+            <td>1999年</td>
+            <td class="struck" style="text-decoration: line-through double; color: #a03020;">林阿琴</td>
+            <td class="note-col" style="color: #a03020; font-weight: bold;">不收。仪式中止。</td>
+          </tr>
+          <tr style="background: rgba(160,48,32,0.08);">
+            <td>2004年</td>
+            <td style="color: #a03020; font-weight: bold;">（赤潮）</td>
+            <td class="note-col" style="color: #a03020;">二十三人失踪。簿上无名。</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px dashed #c8b89a; position: relative;">
+        <div class="red-annotation" style="text-align: center; margin-bottom: 0.5rem;">
+          <span class="red-arrow">&darr;</span> 阿水红笔批注 <span class="red-arrow">&darr;</span>
+        </div>
+        <div style="font-family: var(--font-handwriting); color: #a03020; font-size: 0.8rem; text-align: center; line-height: 1.8;">
+          99年那条给划掉了。为什么不收？<br>
+          04年簿上没名字。可少了二十三个人。<br>
+          是不是就差一个名字？
+        </div>
+      </div>
+      <div class="page-stamp">潮生宫</div>
+    </div>
+
+    <div class="book-page-blank">
+      <div style="font-family: var(--font-official); font-size: 0.9rem; color: #5a3a1a; text-align: center; margin-bottom: 1.5rem; letter-spacing: 0.2em;">
+        最新一页
+      </div>
+
+      <div style="font-family: var(--font-official); font-size: 0.8rem; color: #8b6b4a; margin-bottom: 1rem; text-align: center;">
+        甲辰年 · 大潮日 · 七月初三
+      </div>
+
+      <div class="blank-line"></div>
+      <div class="blank-line"></div>
+      <div class="blank-line" style="position: relative;">
+        <span class="written-red" style="left: 50%; transform: translateX(-50%); font-size: 1.1rem; letter-spacing: 0.3em;">林 阿 水</span>
+        <div class="red-circle"></div>
+      </div>
+      <div class="blank-line"></div>
+      <div class="blank-line"></div>
+
+      <div style="margin-top: 2rem; padding: 1rem; border: 1px dashed #c8b89a; position: relative;">
+        <div style="font-family: var(--font-handwriting); color: #a03020; font-size: 0.8rem; line-height: 1.8;">
+          阿水的红笔批注：<br>
+          <span style="font-size: 0.9rem;">是我。</span><br>
+          <span style="font-size: 0.75rem; opacity: 0.7;">铅笔擦过了，还看得出来。原来写的不是我。</span><br>
+          <span style="font-size: 0.75rem; opacity: 0.7;">掷过筊了。姓林的。他们要的是姓林的。</span>
+        </div>
+      </div>
+
+      <div class="page-stamp" style="border-color: rgba(160,48,32,0.5); color: rgba(160,48,32,0.5);">
+        待填
+      </div>
+    </div>
+
+  </div>
+
+  <div class="photo-evidence">
+    <div class="evidence-frame">
+      <div class="photo-placeholder" style="min-height: 120px; display: flex; align-items: center; justify-content: center;">
+        <img src="assets/photo_14_red_circle_closeup.png" alt="还潮簿最新一页">
+        <div style="position:absolute;bottom:0.5rem;right:0.5rem;font-size:0.7rem;color:#a03020;background:rgba(232,223,208,0.8);padding:0.2rem 0.5rem;">红圈处：林阿水</div>
+      </div>
+      <div class="evidence-caption">
+        IMG_20240815_2347.jpg · 2024.08.15 23:47 · 潮生宫后殿 · ISO 3200 · 1/15s
+      </div>
+    </div>
+  </div>
+
+  <div class="book-footer">
+    <div class="note">
+      物证编号 B-001。原件由潮生宫庙祝林水伯保管。<br>
+      此为阿水翻拍照片。原件未提取。<br>
+      注意：1999年条目与2004年条目之间存在异常。需进一步调查。
+    </div>
+  </div>
+
+
+  
+  <script src="js/state.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      GameState.set('currentAct', 2);
+      GameState.recordClue('book_read');
+
+      const pages = document.querySelectorAll('.book-page, .book-page-blank, .book-cover');
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.style.opacity = '1';
+            entry.target.style.transform = 'translateY(0)';
+          }
+        });
+      }, { threshold: 0.2 });
+
+      pages.forEach(page => {
+        page.style.opacity = '0';
+        page.style.transform = 'translateY(15px)';
+        page.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+        observer.observe(page);
+      });
+
+      const circled = document.querySelector('.red-circle');
+      if (circled) {
+        setTimeout(() => {
+          GameState.recordClue('book_name_found');
+        }, 3000);
+      }
+    });
+  </script>
+</body>
+</html>

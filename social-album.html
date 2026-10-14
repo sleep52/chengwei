@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>相册 — ashui_2001</title>
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/social-app.css">
+  <style>
+    .album-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+      padding: 2px 0;
+    }
+
+    .album-cell {
+      position: relative;
+      aspect-ratio: 1 / 1;
+      background: #0d1117;
+      overflow: hidden;
+      display: block;
+    }
+
+    .album-cell img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: saturate(0.85);
+      display: block;
+    }
+
+    .album-cell span {
+      position: absolute;
+      left: 0; right: 0; bottom: 0;
+      padding: 0.2rem 0.35rem;
+      background: rgba(0,0,0,0.55);
+      font-family: var(--font-mono);
+      font-size: 0.58rem;
+      color: #c0ccda;
+    }
+
+    .album-note {
+      margin: 1.25rem 1rem 0;
+      padding: 0.9rem 1rem;
+      background: #1b2733;
+      border: 1px solid #2f3e4e;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      line-height: 1.7;
+      color: #8899a6;
+    }
+
+    .album-note a { color: #1d9bf0; text-decoration: none; }
+    .album-note a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body data-page="social-album">
+  <div id="login-gate">
+    <form class="login-card" id="login-form" autocomplete="off">
+      <div class="login-brand">潮闻 · 手机版</div>
+      <div class="login-title">查看 @ashui_2001 的主页需要先登录</div>
+      <div class="login-field">
+        <label for="lg-u">账号</label>
+        <input id="lg-u" type="text" placeholder="手机号 / 用户名">
+      </div>
+      <div class="login-field">
+        <label for="lg-p">密码</label>
+        <input id="lg-p" type="password" placeholder="••••••••">
+      </div>
+      <button class="login-btn" type="submit">登录</button>
+      <div class="login-err" id="lg-err"></div>
+      <div class="login-hint" id="lg-hint">阿月在论坛第一楼里把她弟弟的账号密码贴上去了。回去看一眼。</div>
+      <div class="login-foot">此账号最后一次登录：2024.08.19 03:47</div>
+      <a class="login-back" href="index.html">← 返回论坛</a>
+    </form>
+  </div>
+
+
+  <div class="social-header">
+    <a class="back" href="index.html">← 返回论坛</a>
+    <div class="profile-name">相册</div>
+    <div class="post-count">3 张照片</div>
+  </div>
+
+
+  <div class="album-grid">
+    <a class="album-cell" href="photos.html"><img src="assets/photo_02_banyan_tree.png" alt="村口老榕树"><span>8月2日</span></a>
+    <a class="album-cell" href="photos.html"><img src="assets/photo_11_five_silhouettes.png" alt="五个人的背影"><span>8月13日</span></a>
+    <a class="album-cell" href="book.html"><img src="assets/photo_13_book_corner.png" alt="还潮簿"><span>8月15日</span></a>
+  </div>
+
+  <div class="album-note">
+    他发出来的就这三张。他手机里原来拍的还在，是他姐姐把手机寄回来之后导出来的，跟这儿不是一回事。<br>
+    <a href="photos.html">→ 那一份在照片集里，17 张，带位置和拍摄时间</a>
+  </div>
+
+  <div class="feed-end">— 相册里就这些 —</div>
+
+  <nav class="app-nav">
+    <a class="app-tab" href="social.html"><span class="i">🏠</span><span>首页</span></a>
+    <a class="app-tab active" href="social-album.html"><span class="i">🖼️</span><span>相册</span></a>
+    <a class="app-tab" href="social-dm.html"><span class="i">✉️</span><span>消息</span></a>
+  </nav>
+
+  <script src="js/state.js"></script>
+  <script src="js/social-app.js"></script>
+</body>
+</html>

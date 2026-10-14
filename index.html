@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>埕尾村论坛 - 我弟弟去了埕尾村，一个月没消息</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: #e8e6e1;
+            color: #333;
+            font-family: "Microsoft YaHei", "SimSun", -apple-system, sans-serif;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        /* 顶部 */
+        .forum-header {
+            background: linear-gradient(to bottom, #3a6186, #2c4f6e);
+            color: white;
+            padding: 0;
+            border-bottom: 3px solid #c8a415;
+        }
+        .forum-header-inner {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .forum-logo {
+            font-size: 20px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        }
+        .forum-logo small {
+            font-size: 11px;
+            font-weight: normal;
+            opacity: 0.7;
+            letter-spacing: 0;
+            margin-left: 8px;
+        }
+        .forum-nav {
+            display: flex;
+            gap: 0;
+            font-size: 13px;
+        }
+        .forum-nav a {
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            padding: 4px 14px;
+            border-right: 1px solid rgba(255,255,255,0.15);
+        }
+        .forum-nav a:first-child { border-left: 1px solid rgba(255,255,255,0.15); }
+        .forum-nav a:hover { color: white; background: rgba(255,255,255,0.1); }
+
+        /* 面包屑 */
+        .breadcrumb {
+            background: #d6d3cc;
+            padding: 8px 20px;
+            font-size: 12px;
+            color: #666;
+            border-bottom: 1px solid #c0bdb6;
+        }
+        .breadcrumb-inner {
+            max-width: 960px;
+            margin: 0 auto;
+        }
+        .breadcrumb a {
+            color: #3a6186;
+            text-decoration: none;
+        }
+        .breadcrumb a:hover { text-decoration: underline; }
+
+        /* 主体 */
+        .container {
+            max-width: 960px;
+            margin: 16px auto;
+            padding: 0 16px;
+        }
+
+        /* 帖子标题栏 */
+        .thread-title-bar {
+            background: #f7f6f3;
+            border: 1px solid #ccc;
+            border-bottom: none;
+            padding: 14px 20px;
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 16px;
+        }
+        .thread-title-bar h1 {
+            font-size: 18px;
+            color: #333;
+            font-weight: bold;
+            line-height: 1.4;
+        }
+        .thread-tags {
+            display: flex;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+        .thread-tag {
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 2px;
+            border: 1px solid;
+        }
+        .thread-tag.reward { color: #c8a415; border-color: #c8a415; background: #fffbe6; }
+        .thread-tag.help { color: #3a6186; border-color: #3a6186; background: #eef4f9; }
+
+        .thread-info-bar {
+            background: #f0eeea;
+            border: 1px solid #ccc;
+            border-top: none;
+            padding: 8px 20px;
+            font-size: 12px;
+            color: #888;
+            display: flex;
+            gap: 20px;
+        }
+        .thread-info-bar span { display: flex; align-items: center; gap: 3px; }
+
+        /* 帖子 */
+        .post {
+            border: 1px solid #ccc;
+            margin-bottom: -1px;
+            background: #fff;
+            display: flex;
+        }
+        .post + .post { margin-top: 0; }
+
+        .post-sidebar {
+            width: 140px;
+            background: #f7f6f3;
+            border-right: 1px solid #ddd;
+            padding: 16px 12px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+        .post-sidebar .avatar {
+            width: 64px;
+            height: 64px;
+            border-radius: 4px;
+            background: #ddd;
+            margin: 0 auto 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: #888;
+            border: 1px solid #ccc;
+        }
+        .post-sidebar .username {
+            font-weight: bold;
+            color: #3a6186;
+            font-size: 13px;
+            word-break: break-all;
+        }
+        .post-sidebar .badge {
+            display: inline-block;
+            font-size: 10px;
+            padding: 1px 6px;
+            border-radius: 2px;
+            margin-top: 4px;
+            color: #fff;
+        }
+        .badge.op { background: #c0392b; }
+        .badge.vip { background: #c8a415; }
+        .post-sidebar .user-info {
+            font-size: 11px;
+            color: #999;
+            margin-top: 6px;
+            line-height: 1.6;
+        }
+
+        .post-main {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+        }
+        .post-top-bar {
+            background: #f7f6f3;
+            padding: 6px 16px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: #999;
+        }
+        .post-top-bar .floor {
+            font-weight: bold;
+            color: #c0392b;
+        }
+        .post-body {
+            padding: 16px 20px;
+            font-size: 14px;
+            line-height: 1.9;
+            flex: 1;
+        }
+        .post-body p { margin-bottom: 10px; }
+        .post-body p:last-child { margin-bottom: 0; }
+
+        .highlight {
+            background: #fff3cd;
+            padding: 1px 4px;
+            border-radius: 2px;
+            font-family: "Courier New", monospace;
+            font-size: 13px;
+        }
+
+        .warning-box {
+            background: #fef7f0;
+            border: 1px solid #e8c9a8;
+            border-radius: 3px;
+            padding: 10px 14px;
+            margin: 14px 0;
+            font-size: 13px;
+            color: #8a6d3b;
+        }
+
+        .reply-quote {
+            background: #f7f6f3;
+            border: 1px solid #e0ddd6;
+            border-left: 3px solid #3a6186;
+            padding: 10px 14px;
+            margin: 10px 0;
+            font-size: 13px;
+            color: #666;
+        }
+        .reply-quote .rq-author {
+            font-weight: bold;
+            color: #3a6186;
+            font-size: 12px;
+            margin-bottom: 4px;
+        }
+
+        .deleted {
+            padding: 20px;
+            color: #bbb;
+            font-style: italic;
+            font-size: 13px;
+            text-align: center;
+            background: #faf9f6;
+        }
+
+        /* 分页 */
+        .pagination {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 0;
+            font-size: 12px;
+            color: #888;
+        }
+        .pagination .pages {
+            display: flex;
+            gap: 4px;
+        }
+        .pagination .pages a {
+            display: inline-block;
+            padding: 3px 8px;
+            border: 1px solid #ccc;
+            color: #3a6186;
+            text-decoration: none;
+            background: #fff;
+            font-size: 12px;
+        }
+        .pagination .pages a.active {
+            background: #3a6186;
+            color: #fff;
+            border-color: #3a6186;
+        }
+
+        /* 快速回复 */
+        .quick-reply {
+            border: 1px solid #ccc;
+            background: #f7f6f3;
+            padding: 16px 20px;
+            margin-top: 16px;
+        }
+        .quick-reply h3 {
+            font-size: 13px;
+            color: #555;
+            margin-bottom: 10px;
+        }
+        .quick-reply textarea {
+            width: 100%;
+            height: 80px;
+            border: 1px solid #ccc;
+            padding: 8px;
+            font-size: 13px;
+            font-family: inherit;
+            resize: vertical;
+            background: #fff;
+        }
+        .quick-reply .qr-actions {
+            margin-top: 8px;
+            display: flex;
+            justify-content: flex-end;
+        }
+        .quick-reply .qr-btn {
+            background: #3a6186;
+            color: #fff;
+            border: none;
+            padding: 6px 20px;
+            font-size: 13px;
+            cursor: pointer;
+            border-radius: 2px;
+        }
+        .quick-reply .qr-btn:hover { background: #2c4f6e; }
+
+        /* 底部 */
+        .forum-footer {
+            max-width: 960px;
+            margin: 30px auto 0;
+            padding: 16px 20px;
+            border-top: 2px solid #c8a415;
+            text-align: center;
+            font-size: 11px;
+            color: #999;
+            line-height: 1.8;
+        }
+
+        /* 手机端 */
+        @media (max-width: 700px) {
+            .post { flex-direction: column; }
+            .post-sidebar {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid #ddd;
+                padding: 10px 16px;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                text-align: left;
+            }
+            .post-sidebar .avatar {
+                width: 36px; height: 36px; font-size: 16px; margin: 0;
+            }
+            .post-sidebar .user-info { display: block; font-size: 10px; line-height: 1.6; }
+            .thread-title-bar { flex-direction: column; gap: 8px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="forum-header">
+        <div class="forum-header-inner">
+            <div class="forum-logo">埕尾村论坛<small>Chengwei Village BBS</small></div>
+            <div class="forum-nav">
+                <a href="#">首页</a>
+                <a href="#">板块</a>
+                <a href="#">悬赏</a>
+                <a href="#">成员</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="breadcrumb">
+        <div class="breadcrumb-inner">
+            <a href="#">论坛首页</a> &gt; <a href="#">互助区</a> &gt; 我弟弟去了埕尾村，一个月没消息
+        </div>
+    </div>
+
+    <div class="container">
+
+        <div class="thread-title-bar">
+            <h1>我弟弟去了埕尾村，一个月没消息</h1>
+            <div class="thread-tags">
+                <span class="thread-tag reward">悬赏</span>
+                <span class="thread-tag help">求助</span>
+            </div>
+        </div>
+        <div class="thread-info-bar">
+            <span>发布于 2024-09-12 23:42</span>
+            <span>浏览: 3,906</span>
+            <span>回复: 9</span>
+            <span>最后回复: 2024-11-03 21:07</span>
+        </div>
+
+        <!-- 主帖 -->
+        <div class="post">
+            <div class="post-sidebar">
+                <div class="avatar">月</div>
+                <div>
+                    <div class="username">阿月</div>
+                    <span class="badge op">楼主</span>
+                    <div class="user-info">注册: 2023-02<br>帖子: 17</div>
+                </div>
+            </div>
+            <div class="post-main">
+                <div class="post-top-bar">
+                    <span class="floor">楼主</span>
+                    <span>2024-09-12 23:42</span>
+                </div>
+                <div class="post-body">
+                    <p>大家好，我是阿月，在外面打工的。</p>
+                    <p>我弟弟阿水，网上叫 ashui_2001。他做的是那种拍没人去的地方的片子，空心村、废学校，一整套装备，一年到头在外头跑。8月2号他一个人去了埕尾村，8月19号之后就没消息了。电话打过去是关机。我托人替我去村里问过，那边的人说他"不在了"。可人我没见到，骨灰盒我也没见到。报过案，警察讲没有尸体，立不了案。</p>
+                    <p>他这一个月在网上留了一堆东西，照片啊录音啊那些。他人不在，东西倒后来寄回来了，里面夹着一本日记，我看不懂他记的什么。我这边有急事处理不了，所以想请你们帮我理一理，看看他最后那一个多月到底在干什么。</p>
+                    <p>他的账号密码我附在这儿了，你们直接登进去看：<span class="highlight">账号：ashui_2001 / 密码：chaochao2001</span></p>
+                    <p>他成天用的那个软件叫潮闻。网页版我照着手机地址栏打上：<a href="social.html" style="color: #3a6186;">潮闻</a>。我这边登不进去，它一上来就要绑手机，他那个号早停机了。东西应该都在里头，你们自己翻。</p>
+
+                    <p>我就想知道他人到哪儿去了。村里人讲他是"被海收走的"，我不信这种话，都什么年代了。</p>
+                    <p>查清楚了回帖告诉我一声。麻烦你们了。</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 回复1 -->
+        <div class="post">
+            <div class="post-sidebar">
+                <div class="avatar">海</div>
+                <div>
+                    <div class="username">海边捡贝壳</div>
+                    <div class="user-info">注册: 2022-06<br>帖子: 203</div>
+                </div>
+            </div>
+            <div class="post-main">
+                <div class="post-top-bar">
+                    <span class="floor">1楼</span>
+                    <span>2024-09-13 00:15</span>
+                </div>
+                <div class="post-body">
+                    <p>埕尾村啊</p>
+                    <p>我表哥跑船那几年在附近海面捞上过东西，回来就不太说话了，问他也不讲。</p>
+                    <p>还潮这个我是听人说起过，说得很邪，我也没当回事。悬赏开了那我试试，先从社交账号那边看。</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 回复2 -->
+        <div class="post">
+            <div class="post-sidebar">
+                <div class="avatar">调</div>
+                <div>
+                    <div class="username">调查员007</div>
+                    <span class="badge vip">VIP</span>
+                    <div class="user-info">注册: 2019-11<br>帖子: 1,482</div>
+                </div>
+            </div>
+            <div class="post-main">
+                <div class="post-top-bar">
+                    <span class="floor">2楼</span>
+                    <span>2024-09-13 01:33</span>
+                </div>
+                <div class="post-body">
+                    <p>照片我扒了一遍，EXIF里带着经纬度。8月15号那几张基本都在一个地方，庙后面那片滩涂。</p>
+                    <p>有一张背景里有个东西，看着像碑。这个得点开大图看，缩略图看不出来。</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 回复3 -->
+        <div class="post">
+            <div class="post-sidebar">
+                <div class="avatar">路</div>
+                <div>
+                    <div class="username">路过打酱油</div>
+                    <div class="user-info">注册: 2024-01<br>帖子: 5</div>
+                </div>
+            </div>
+            <div class="post-main">
+                <div class="post-top-bar">
+                    <span class="floor">3楼</span>
+                    <span>2024-09-13 08:20</span>
+                </div>
+                <div class="post-body">
+                    <p>别碰 认真的</p>
+                    <p>我家离埕尾不远。04年那年我们村也少了人，家里大人不许讲，讲一次挨一次打，我到现在也不知道少的是谁。</p>
+                    <p>反正你别碰</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 回复4 -->
+        <div class="post">
+            <div class="post-sidebar">
+                <div class="avatar">蹲</div>
+                <div>
+                    <div class="username">蹲一下</div>
+                    <div class="user-info">注册: 2024-09<br>帖子: 1</div>
+                </div>
+            </div>
+            <div class="post-main">
+                <div class="post-top-bar">
+                    <span class="floor">4楼</span>
+                    <span>2024-09-13 09:02</span>
+                </div>
+                <div class="post-body">
+                    <p>蹲</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 回复4 -->
+        <div class="post">
+            <div class="post-sidebar">
+                <div class="avatar">音</div>
+                <div>
+                    <div class="username">音频爱好者</div>
+                    <div class="user-info">注册: 2023-08<br>帖子: 89</div>
+                </div>
+            </div>
+            <div class="post-main">
+                <div class="post-top-bar">
+                    <span class="floor">5楼</span>
+                    <span>2024-09-13 10:45</span>
+                </div>
+                <div class="post-body">
+                    <p>那个加密录音我试着解了一下。生日、手机号后六位、QQ号都不对。</p>
+                    <p>我怀疑是日期。日记里有几处日期是拿农历写的，你换成公历再试试。七月初三是几号我手边没日历，你们自己翻。</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 回复5 -->
+        <div class="post">
+            <div class="post-sidebar">
+                <div class="avatar">月</div>
+                <div>
+                    <div class="username">阿月</div>
+                    <span class="badge op">楼主</span>
+                    <div class="user-info">注册: 2023-02<br>帖子: 17</div>
+                </div>
+            </div>
+            <div class="post-main">
+                <div class="post-top-bar">
+                    <span class="floor">6楼</span>
+                    <span>2024-09-13 12:00</span>
+                </div>
+                <div class="post-body">
+                    <div class="reply-quote">
+                        <div class="rq-author">路过打酱油 发表于 2024-09-13 08:20</div>
+                        别碰 认真的
+                    </div>
+                    <p>谢谢 我知道你是好意</p>
+                    <p>可是我不查 我白天上班晚上躺着 想的都是这个。我妈走的时候就说了一句让我看着点他 我没看着</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 回复6 - 已删除 -->
+        <div class="post">
+            <div class="deleted">
+                [该回复已被删除 · 操作人：管理员 · 理由：涉及真实姓名]
+            </div>
+        </div>
+
+        <!-- 回复7 -->
+        <div class="post">
+            <div class="post-sidebar">
+                <div class="avatar">老</div>
+                <div>
+                    <div class="username">老相机</div>
+                    <div class="user-info">注册: 2011-09<br>帖子: 3,217</div>
+                </div>
+            </div>
+            <div class="post-main">
+                <div class="post-top-bar">
+                    <span class="floor">8楼</span>
+                    <span>2024-09-13 15:30</span>
+                </div>
+                <div class="post-body">
+                    <p>阿水在我这儿买过一台二手录音笔，两百块，我还多塞了张卡给他。</p>
+                    <p>过了几天他专门又跑一趟来还卡，说用不上那么多。那会儿他还没出事。</p>
+                    <p>这孩子话多，见谁都问，问个没完。我嫌他烦。</p>
+                    <p>东西都在他那个账号里头，你们自己翻。我不多讲了。</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 回复8 -->
+        <div class="post">
+            <div class="post-sidebar">
+                <div class="avatar">月</div>
+                <div>
+                    <div class="username">阿月</div>
+                    <span class="badge op">楼主</span>
+                    <div class="user-info">注册: 2023-02<br>帖子: 17</div>
+                </div>
+            </div>
+            <div class="post-main">
+                <div class="post-top-bar">
+                    <span class="floor">9楼</span>
+                    <span>2024-09-13 23:59</span>
+                </div>
+                <div class="post-body">
+                    <p>看完了不用写什么东西 直接 <a href="report.html" style="color: #3a6186;">私信我</a> 你看见什么就跟我讲什么 想到什么就说 不理解的也可以问我</p>
+                    <p>我这边一直在线。谢谢你们</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 回复9 -->
+        <div class="post">
+            <div class="post-sidebar">
+                <div class="avatar">月</div>
+                <div>
+                    <div class="username">阿月</div>
+                    <span class="badge op">楼主</span>
+                    <div class="user-info">注册: 2023-02<br>帖子: 17</div>
+                </div>
+            </div>
+            <div class="post-main">
+                <div class="post-top-bar">
+                    <span class="floor">10楼</span>
+                    <span>2024-11-03 21:07</span>
+                </div>
+                <div class="post-body">
+                    <p>不好意思把这个楼又翻起来了</p>
+                    <p>我前天另外开了一个帖，问的也不是我弟，问的是这个村子现在还在不在。昨天想再看一眼，没有了。版主那边说是上面交代下来的，涉敏，直接删。</p>
+                    <p>我这儿还留着当时那个链接：<a href="thread_2847.html" style="color: #3a6186;">我那个帖</a>。要是哪天你们点开还能看见，麻烦看一眼，里头有我想问的话。</p>
+                    <p>之前在这个楼里回过我的那几位，要是还在，跟我说一声。我这边都好，就是夜里还是醒。</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 分页 -->
+        <div class="pagination">
+            <span>共 9 条回复</span>
+            <div class="pages">
+                <a href="#" class="active">1</a>
+            </div>
+        </div>
+
+        <!-- 快速回复 -->
+        <div class="quick-reply">
+            <h3>快速回复</h3>
+            <textarea placeholder="写下你的回复..."></textarea>
+            <div class="qr-actions">
+                <button class="qr-btn">提交回复</button>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="forum-footer">
+        <p>埕尾村论坛 &copy; 2024</p>
+        <p>Powered by BBSXP 2024 | 闽ICP备XXXXXXXX号</p>
+    </div>
+
+
+</body>
+</html>

@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>后来</title>
+  <link rel="stylesheet" href="css/base.css">
+  <style>
+    body {
+      background: #0a0c0f;
+      padding: 3rem 1rem 5rem;
+    }
+
+    .wrap { max-width: 620px; margin: 0 auto; }
+
+    .stamp-row {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      color: #3a3f47;
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+
+    .doc {
+      opacity: 0;
+      transform: translateY(14px);
+      transition: opacity 1.1s, transform 1.1s;
+      margin-bottom: 2.5rem;
+    }
+    .doc.visible { opacity: 1; transform: translateY(0); }
+
+    .doc-src {
+      font-family: var(--font-mono);
+      font-size: 0.62rem;
+      color: #4b5563;
+      margin-bottom: 0.4rem;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    /* 警情通报 */
+    .police-head {
+      background: #123a6b;
+      color: #fff;
+      padding: 0.7rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+    }
+    .police-seal {
+      width: 30px; height: 30px; border-radius: 50%;
+      border: 2px solid #d8c26a; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      color: #d8c26a; font-size: 0.7rem; font-family: var(--font-official);
+    }
+    .police-head .pn { font-family: var(--font-official); font-size: 0.95rem; letter-spacing: 0.12em; }
+    .police-head .ps { font-size: 0.62rem; color: #a9c0e0; margin-top: 0.1rem; }
+
+    .paper {
+      background: #f7f6f2;
+      color: #21252b;
+      padding: 1.4rem 1.2rem 1.6rem;
+      font-family: var(--font-official);
+      font-size: 0.8rem;
+      line-height: 1.95;
+    }
+    .paper h2 {
+      text-align: center;
+      font-size: 1.05rem;
+      letter-spacing: 0.3em;
+      margin-bottom: 1rem;
+      font-weight: 700;
+    }
+    .paper p { text-indent: 2em; margin-bottom: 0.7rem; }
+    .paper .sign { text-align: right; margin-top: 1.2rem; text-indent: 0; }
+    .paper .quoted { color: #8a1c1c; }
+
+    .notice-head {
+      background: #f7f6f2;
+      padding-top: 1.2rem;
+      text-align: center;
+      font-family: var(--font-official);
+      color: #9a1a12;
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+    }
+    .notice-title {
+      text-align: center;
+      font-family: var(--font-official);
+      font-size: 1rem;
+      color: #21252b;
+      padding: 0.5rem 1rem 0;
+      background: #f7f6f2;
+      font-weight: 700;
+    }
+    .rule-red { height: 2px; background: #9a1a12; margin: 0.8rem 1.2rem 1rem; }
+    .paper .attach {
+      font-size: 0.7rem;
+      color: #6b6b62;
+      text-indent: 0;
+      border-top: 1px dashed #ccc6b8;
+      padding-top: 0.6rem;
+      margin-top: 1rem;
+    }
+
+    /* 地图 */
+    .mapbox { background: #eef1f4; border-top: 3px solid #d6dbe1; }
+    .map-search {
+      background: #fff;
+      margin: 0.9rem;
+      padding: 0.6rem 0.8rem;
+      border-radius: 3px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+      font-size: 0.78rem;
+      color: #2b3a4a;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .map-search .q { color: #1a73e8; }
+    .map-canvas {
+      position: relative;
+      height: 190px;
+      background:
+        linear-gradient(180deg, #dfe7ee 0%, #e8eef2 100%);
+      overflow: hidden;
+    }
+    .sea {
+      position: absolute; left: 0; right: 0; bottom: 0; height: 62px;
+      background: #b9d4e8;
+    }
+    .road {
+      position: absolute; left: -5%; top: 96px; width: 110%; height: 3px;
+      background: #f5c65b; transform: rotate(-6deg);
+    }
+    .road-block {
+      position: absolute; left: 58%; top: 78px;
+      background: #d33c24; color: #fff;
+      font-size: 0.62rem; padding: 0.18rem 0.42rem; border-radius: 2px;
+      font-family: var(--font-body);
+      transform: rotate(-6deg);
+    }
+    .pin-ghost {
+      position: absolute; left: 34%; top: 44px;
+      color: #98a2ad; font-size: 0.66rem; font-family: var(--font-body);
+    }
+    .map-foot {
+      background: #fff; margin: 0.9rem; padding: 0.55rem 0.7rem;
+      font-size: 0.68rem; color: #6b7280; border-radius: 3px;
+    }
+
+    /* 浏览器错误页 */
+    .browser { background: #fff; color: #202124; border-radius: 4px; padding: 1.6rem 1.4rem; font-size: 0.8rem; }
+    .browser .addr {
+      font-family: var(--font-mono); font-size: 0.68rem; color: #5f6368;
+      background: #f1f3f4; padding: 0.35rem 0.6rem; border-radius: 14px;
+      display: inline-block; margin-bottom: 1rem;
+    }
+    .browser .gicon { font-size: 1.5rem; color: #dadce0; margin-bottom: 0.5rem; }
+    .browser h3 { font-size: 0.95rem; font-weight: 500; margin-bottom: 0.5rem; }
+    .browser p { color: #5f6368; line-height: 1.7; }
+    .browser .code { font-family: var(--font-mono); font-size: 0.7rem; color: #80868b; margin-top: 0.8rem; }
+    .browser .cached {
+      margin-top: 1rem; padding-top: 0.8rem; border-top: 1px solid #e8eaed;
+      font-size: 0.7rem; color: #80868b;
+    }
+
+    /* 论坛 */
+    .bbs { background: #f5f5f0; border-top: 3px solid #3a6186; }
+    .bbs-head {
+      background: #3a6186; color: #fff; padding: 0.5rem 0.9rem;
+      font-family: var(--font-official); font-size: 0.8rem; letter-spacing: 0.1em;
+    }
+    .bbs-post { padding: 1rem 0.9rem; }
+    .bbs-meta { font-size: 0.72rem; color: #667; margin-bottom: 0.5rem; font-family: var(--font-mono); }
+    .bbs-title { font-size: 0.9rem; color: #2b3a4a; font-weight: 600; margin-bottom: 0.5rem; }
+    .bbs-body { font-size: 0.8rem; color: #444; line-height: 1.8; }
+    .bbs-stats { font-size: 0.68rem; color: #99a; margin-top: 0.7rem; font-family: var(--font-mono); }
+    .bbs-deleted {
+      margin: 0 0.9rem 1rem; padding: 0.7rem 0.9rem;
+      background: #ececec; color: #8a2b20; font-size: 0.72rem;
+      border-left: 3px solid #b3382b; font-family: var(--font-official);
+    }
+
+    /* 短视频平台 */
+    .video { background: #fff; color: #202124; }
+    .v-thumb {
+      position: relative; height: 158px;
+      background:
+        linear-gradient(180deg, rgba(10,20,28,0.15) 0%, rgba(10,20,28,0.55) 100%),
+        linear-gradient(105deg, #4a6272 0%, #6d8592 38%, #345063 38%, #2a4152 100%);
+    }
+    .v-play {
+      position: absolute; left: 50%; top: 50%;
+      transform: translate(-50%, -50%);
+      width: 40px; height: 40px; border-radius: 50%;
+      background: rgba(0,0,0,0.42); color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.9rem;
+    }
+    .v-dur {
+      position: absolute; right: 8px; bottom: 8px;
+      background: rgba(0,0,0,0.55); color: #fff;
+      font-family: var(--font-mono); font-size: 0.62rem;
+      padding: 0.1rem 0.35rem; border-radius: 2px;
+    }
+    .v-info { padding: 0.75rem 0.9rem 0.6rem; }
+    .v-title { font-size: 0.85rem; line-height: 1.6; color: #202124; }
+    .v-by { font-size: 0.7rem; color: #65686c; margin-top: 0.35rem; }
+    .v-stat { font-size: 0.68rem; color: #91959a; margin-top: 0.2rem; font-family: var(--font-mono); }
+    .v-off {
+      margin: 0 0.9rem; padding: 0.55rem 0.7rem;
+      background: #f2f3f5; color: #8a2b20;
+      font-size: 0.7rem; line-height: 1.6;
+      border-left: 3px solid #b3382b; font-family: var(--font-official);
+    }
+    .v-cmt { padding: 0.7rem 0.9rem 0.2rem; font-size: 0.72rem; color: #4b4f53; line-height: 1.9; }
+    .v-cmt > div { border-top: 1px solid #edeff1; padding-top: 0.25rem; }
+    .v-cmt .v-cmt-note { color: #b0b4b8; font-size: 0.66rem; }
+    .v-last {
+      margin: 0.4rem 0.9rem 0.9rem; padding-top: 0.5rem;
+      border-top: 1px dashed #dfe2e6;
+      font-size: 0.68rem; color: #91959a;
+    }
+
+    /* 结局 */
+    .end {
+      text-align: center; padding: 3rem 1rem 1rem;
+      opacity: 0; transition: opacity 2s;
+    }
+    .end.visible { opacity: 1; }
+    .end .t { font-size: 0.9rem; color: #6b7280; letter-spacing: 0.2em; margin-bottom: 1.4rem; font-family: var(--font-official); }
+    .end .s { font-size: 0.76rem; color: #4b5563; line-height: 2.2; max-width: 420px; margin: 0 auto; }
+    .end .links { margin-top: 3rem; }
+    .end .links a {
+      display: block; font-size: 0.72rem; color: #3a3f47;
+      text-decoration: none; margin-bottom: 0.6rem;
+    }
+    .end .links a:hover { color: #6b7280; }
+  </style>
+</head>
+<body data-page="ending-d">
+
+  <div class="wrap">
+    <div class="stamp-row" id="stamp-row">互联网档案馆 · 帖子 2847 的快照 · 抓取于 2024-11-05 08:12 · 原帖已删除</div>
+
+    <div class="doc">
+      <div class="doc-src"><span>原帖 · 埕尾村论坛 · 互助区</span><span>快照起始</span></div>
+      <div class="bbs">
+        <div class="bbs-head">埕尾村论坛</div>
+        <div class="bbs-post">
+          <div class="bbs-title">有人能告诉我村子去哪儿了吗</div>
+          <div class="bbs-meta">楼主 · 阿月 · 2024-11-01 09:48</div>
+          <div class="bbs-body">上次谢谢你们。我弟的东西我理完了，都交给律师了。<br>我妈叫我别再提这个地名。我自己搜了一下，搜不着了。<br>有没有人去过。哪怕一次。我想问问他们那儿当时是什么样子。<br>下面这几张是我这一年从各处存下来的，一张一张附在楼里。哪天这个帖也没了，你们还能看见。</div>
+          <div class="bbs-stats">回复: 0 · 浏览: 12</div>
+        </div>
+        <div class="bbs-deleted">[本帖于 2024-11-02 16:20 被管理员删除 · 操作人：管理员 · 理由：涉及真实姓名 · 存档保留原内容]</div>
+      </div>
+    </div>
+
+    <div class="doc">
+      <div class="doc-src"><span>存于 2024-09-30</span><span>图片 1140×760</span></div>
+      <div class="police-head">
+        <div class="police-seal">警</div>
+        <div>
+          <div class="pn">县公安局</div>
+          <div class="ps">官方微博 · 已认证</div>
+        </div>
+      </div>
+      <div class="paper">
+        <h2>警情通报</h2>
+        <p>2024年8月19日，我局接外省群众林某报警称其弟失联。经核查，失联人员林某某，男，23岁，于8月2日独自来辖区埕尾村居住，8月19日后与家属失去联系。</p>
+        <p>我局开展调查逾四十日，走访该片区住户，调取沿途卡口影像。未发现林某某被侵害的证据，未发现其遗体。该案仍在进一步侦查中。</p>
+        <p>9月中旬起，网络上出现涉及埕尾村的<span class="quoted">"活祭""点名""还潮"</span>等说法，引发大量转载。经查，潮生宫管理人员林某某（男，63岁）、吴某某（男，55岁）等人以传统民俗为名组织聚众活动，扰乱社会秩序，已依法予以行政拘留。所谓"仪式致人死亡""全村参与"等内容均系编造。</p>
+        <p>请广大网民不信谣、不传谣。对继续编造、传播虚假信息者，我局将依法追究法律责任。</p>
+        <div class="sign">县公安局<br>2024年9月28日</div>
+      </div>
+      <div class="doc-src" style="margin-top:0.4rem;"><span>该条通报于 2024-09-29 09:12 撤下 · 撤下理由：发布单位要求</span><span></span></div>
+    </div>
+
+    <div class="doc">
+      <div class="doc-src"><span>存于 2024-10-14</span><span>镇政府网站公告栏</span></div>
+      <div class="paper" style="padding-top:0;">
+        <div class="notice-head">×××镇人民政府文件</div>
+        <div class="notice-title">关于埕尾村房屋腾退及潮生宫封闭管理的公告</div>
+        <div class="rule-red"></div>
+        <p>经第三方机构鉴定，埕尾村现存民居多数承重构件受潮腐蚀，存在结构性安全隐患；潮生宫正殿梁架糟朽，有坠落风险。自即日起对潮生宫实施封闭管理，暂停一切参观、祭祀活动。</p>
+        <p>全村房屋开展腾退，村民由亲属接返或入住镇安置房。目前已完成腾退，相关人员均已妥善安置。该片区后续纳入滨海生态管控范围，无关人员不得进入。</p>
+        <p>特此公告。</p>
+        <div class="sign">镇人民政府<br>2024年10月9日</div>
+        <div class="attach">附件：《腾退人员安置表（第一批）》（点击下载 · 41 人）</div>
+      </div>
+    </div>
+
+    <div class="doc">
+      <div class="doc-src"><span>存于 2024-10-19</span><span>地图网页版</span></div>
+      <div class="mapbox">
+        <div class="map-search"><span class="q">埕尾村</span><span>搜索</span><span style="margin-left:auto;color:#9aa4af;">× </span></div>
+        <div class="map-canvas">
+          <div class="sea"></div>
+          <div class="road"></div>
+          <div class="road-block">施工围挡 · 禁止通行</div>
+          <div class="pin-ghost">埕尾村（无数据）</div>
+        </div>
+        <div class="map-foot">未找到相关地点。建议在附近搜索"××镇"。该片区暂无开放道路数据。</div>
+      </div>
+    </div>
+
+    <div class="doc">
+      <div class="doc-src"><span>存于 2024-10-26</span><span>浏览器页面</span></div>
+      <div class="browser">
+        <div class="addr">chaoshengong.example.cn</div>
+        <div class="gicon">◌</div>
+        <h3>无法访问此网站</h3>
+        <p>chaoshengong.example.cn 的服务器响应时间过长。</p>
+        <p style="margin-top:0.6rem;">请检查网络连接。<br>检查代理和防火墙。</p>
+        <div class="code">ERR_CONNECTION_TIMED_OUT</div>
+        <div class="cached">搜索引擎收录的该站最后快照：2024-08-01。快照中"参观须知"共 8 条。</div>
+      </div>
+    </div>
+
+    <div class="doc">
+      <div class="doc-src"><span>存于 2024-10-31 22:04</span><span>短视频平台</span></div>
+      <div class="video">
+        <div class="v-thumb">
+          <div class="v-play">&#9654;</div>
+          <div class="v-dur">04:12</div>
+        </div>
+        <div class="v-info">
+          <div class="v-title">埕尾村｜围挡是真的。我从县道绕了十一公里进来。</div>
+          <div class="v-by">阿凯跑外景 · 2024-10-22</div>
+          <div class="v-stat">播放 8,126 · 评论 214</div>
+        </div>
+        <div class="v-off">[该视频已下架 · 原因：内容涉及争议信息 · 处理时间 2024-10-25 14:03]</div>
+        <div class="v-cmt">
+          <div>1楼 · 小周：进去了吗</div>
+          <div>2楼 · 阿凯跑外景（作者）：到门口。没进去。</div>
+          <div>3楼 · 海边捡贝壳：别去。</div>
+          <div class="v-cmt-note">以上 3 条评论已删除</div>
+        </div>
+        <div class="v-last">该账号最后一条：2024-10-30 「回老家歇一阵。设备不还了。」</div>
+      </div>
+    </div>
+
+    <div class="end" id="end">
+      <div class="s">
+        通报里没有"村民"这两个字。<br>
+        那张安置表上一共四十一个人，你一个都不认识。<br><br>
+        后来你偶尔还会搜那个地名。搜出来的都是别人的提问，<br>
+        "埕尾村怎么走""埕尾村还在吗"。底下一个回复也没有。<br><br>
+        你把这几张存进了一个叫"埕尾"的文件夹。<br>
+        没删。
+      </div>
+    </div>
+  </div>
+
+  <script src="js/state.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      GameState.set('ending', 'd');
+
+      const docs = [...document.querySelectorAll('.doc')];
+      const io = new IntersectionObserver(entries => {
+        entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+      }, { threshold: 0.25 });
+      document.querySelectorAll('.doc, .end').forEach(d => io.observe(d));
+
+      setTimeout(() => { if (docs[0]) docs[0].classList.add('visible'); }, 1200);
+    });
+  </script>
+</body>
+</html>

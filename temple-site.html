@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>埕尾村潮生宫 — 官方网站</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: #f5f0e0;
+      color: #333;
+      font-family: "Microsoft YaHei", "SimSun", serif;
+      font-size: 14px;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* Top banner */
+    .site-banner {
+      background: linear-gradient(135deg, #8b0000, #cc0000, #8b0000);
+      color: #ffd700;
+      text-align: center;
+      padding: 1.5rem 1rem;
+      border-bottom: 4px solid #ffd700;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .site-banner::before {
+      content: '☯ ☯ ☯';
+      position: absolute;
+      top: 8px;
+      left: 0;
+      right: 0;
+      font-size: 10px;
+      color: rgba(255, 215, 0, 0.3);
+      letter-spacing: 20px;
+      text-align: center;
+    }
+
+    .site-banner h1 {
+      font-size: 2rem;
+      letter-spacing: 0.5em;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+      font-family: "SimSun", "Songti SC", serif;
+    }
+
+    .site-banner .subtitle {
+      font-size: 0.85rem;
+      color: #ffecb3;
+      margin-top: 0.3rem;
+      letter-spacing: 0.2em;
+    }
+
+    .site-banner .english {
+      font-size: 0.65rem;
+      color: rgba(255,236,179,0.6);
+      margin-top: 0.2rem;
+      font-family: 'Times New Roman', serif;
+      font-style: italic;
+    }
+
+    /* Scrolling announcement */
+    .announcement-bar {
+      background: #fff8dc;
+      border-bottom: 1px solid #daa520;
+      padding: 6px 1rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      overflow: hidden;
+    }
+
+    .announcement-bar .label {
+      background: #cc0000;
+      color: #fff;
+      padding: 2px 8px;
+      border-radius: 2px;
+      font-size: 11px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .announcement-bar .scroll-text {
+      white-space: nowrap;
+      animation: scrollText 25s linear infinite;
+      color: #8b0000;
+    }
+
+    @keyframes scrollText {
+      0% { transform: translateX(100vw); }
+      100% { transform: translateX(-100%); }
+    }
+
+    /* Navigation */
+    .site-nav {
+      background: linear-gradient(to bottom, #cc0000, #990000);
+      display: flex;
+      justify-content: center;
+      border-bottom: 2px solid #ffd700;
+    }
+
+    .site-nav a {
+      color: #ffd700;
+      text-decoration: none;
+      padding: 10px 20px;
+      font-size: 13px;
+      letter-spacing: 0.1em;
+      transition: background 0.2s;
+      border-right: 1px solid rgba(255,215,0,0.2);
+    }
+
+    .site-nav a:first-child { border-left: 1px solid rgba(255,215,0,0.2); }
+    .site-nav a:hover { background: rgba(255,215,0,0.15); }
+    .site-nav a.active { background: rgba(255,215,0,0.2); font-weight: bold; }
+
+    /* Main content */
+    .main-wrap {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 1rem;
+      display: grid;
+      grid-template-columns: 1fr 280px;
+      gap: 1rem;
+    }
+
+    @media (max-width: 768px) {
+      .main-wrap { grid-template-columns: 1fr; }
+    }
+
+    .content-area { min-width: 0; }
+    .sidebar { min-width: 0; }
+
+    /* Section panels */
+    .panel {
+      background: #fff;
+      border: 1px solid #daa520;
+      margin-bottom: 1rem;
+      border-radius: 2px;
+    }
+
+    .panel-header {
+      background: linear-gradient(to right, #8b0000, #cc0000);
+      color: #ffd700;
+      padding: 8px 16px;
+      font-size: 14px;
+      font-weight: bold;
+      letter-spacing: 0.2em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .panel-header .icon { font-size: 16px; }
+
+    .panel-body {
+      padding: 16px;
+      font-size: 13px;
+      line-height: 1.8;
+      color: #444;
+    }
+
+    .panel-body p { margin-bottom: 10px; }
+    .panel-body p:last-child { margin-bottom: 0; }
+
+    /* Welcome section */
+    .welcome-img {
+      width: 100%;
+      height: 180px;
+      background: linear-gradient(135deg, #2c1810 0%, #5a3a1a 40%, #1a6b8a 100%);
+      background-image: url('assets/temple_panorama.png');
+      background-size: cover;
+      background-position: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #d4a574;
+      font-family: "SimSun", serif;
+      font-size: 1.2rem;
+      letter-spacing: 0.3em;
+      margin-bottom: 12px;
+      border: 1px solid #c8b89a;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .welcome-img::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 40%;
+      background: linear-gradient(to top, rgba(26, 107, 138, 0.4), transparent);
+    }
+
+    /* News list */
+    .news-list { list-style: none; }
+
+    .news-list li {
+      padding: 8px 0;
+      border-bottom: 1px dashed #e0d5c0;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 12px;
+      font-size: 13px;
+    }
+
+    .news-list li:last-child { border-bottom: none; }
+
+    .news-list .news-title {
+      color: #333;
+      flex: 1;
+      cursor: default;
+    }
+
+    .news-list .news-title::before {
+      content: '·';
+      color: #cc0000;
+      font-weight: bold;
+      margin-right: 6px;
+    }
+
+    .news-list .news-date {
+      color: #999;
+      font-size: 11px;
+      white-space: nowrap;
+      font-family: 'Courier New', monospace;
+    }
+
+    .news-list .news-title.highlight {
+      color: #8b0000;
+      font-weight: bold;
+    }
+
+    /* Ceremony section */
+    .ceremony-desc {
+      background: #fff8dc;
+      border: 1px solid #daa520;
+      padding: 12px;
+      margin: 10px 0;
+      font-size: 12px;
+      color: #5a3a1a;
+      line-height: 2;
+    }
+
+    .ceremony-desc .term {
+      color: #8b0000;
+      font-weight: bold;
+    }
+
+    /* Name list */
+    .name-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      margin: 10px 0;
+    }
+
+    .name-table th {
+      background: #8b0000;
+      color: #ffd700;
+      padding: 6px 10px;
+      text-align: left;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+    }
+
+    .name-table td {
+      padding: 5px 10px;
+      border-bottom: 1px solid #e0d5c0;
+      color: #555;
+    }
+
+    .name-table tr:nth-child(even) td { background: #faf5eb; }
+
+    .name-table .struck { text-decoration: line-through; color: #999; }
+
+    .name-table .year-1999 td {
+      background: #fff0f0;
+      color: #8b0000;
+    }
+
+    .name-table .note-1999 {
+      font-size: 11px;
+      color: #8b0000;
+      font-style: italic;
+    }
+
+    /* Sidebar */
+    .sidebar .panel-body { padding: 12px; }
+
+    .calendar-box {
+      text-align: center;
+      padding: 10px;
+      background: #fff8dc;
+      border: 1px solid #daa520;
+      border-radius: 2px;
+      margin-bottom: 10px;
+    }
+
+    .calendar-box .lunar {
+      font-size: 1.2rem;
+      color: #8b0000;
+      font-weight: bold;
+      font-family: "SimSun", serif;
+    }
+
+    .calendar-box .solar {
+      font-size: 0.7rem;
+      color: #999;
+      margin-top: 4px;
+    }
+
+    .calendar-box .note {
+      font-size: 0.7rem;
+      color: #cc0000;
+      margin-top: 6px;
+      padding-top: 6px;
+      border-top: 1px dashed #daa520;
+    }
+
+    .weather-box {
+      font-size: 12px;
+      color: #666;
+      line-height: 1.8;
+    }
+
+    .weather-box .temp {
+      font-size: 1.5rem;
+      color: #333;
+      font-weight: bold;
+    }
+
+    /* Guestbook */
+    .guestbook-entry {
+      padding: 10px 0;
+      border-bottom: 1px dashed #e0d5c0;
+      font-size: 12px;
+    }
+
+    .guestbook-entry:last-child { border-bottom: none; }
+
+    .guestbook-entry .gb-name {
+      color: #cc0000;
+      font-weight: bold;
+    }
+
+    .guestbook-entry .gb-date {
+      color: #999;
+      font-size: 10px;
+      margin-left: 8px;
+    }
+
+    .guestbook-entry .gb-text {
+      color: #555;
+      margin-top: 4px;
+      line-height: 1.6;
+    }
+
+    .guestbook-entry .gb-reply {
+      background: #f5f0e0;
+      padding: 6px 10px;
+      margin-top: 6px;
+      border-left: 2px solid #daa520;
+      font-size: 11px;
+      color: #888;
+    }
+
+    /* Rules list */
+    .rules-list {
+      list-style: none;
+      counter-reset: rule;
+    }
+
+    .rules-list li {
+      counter-increment: rule;
+      padding: 6px 0;
+      border-bottom: 1px dashed #e0d5c0;
+      font-size: 12px;
+      line-height: 1.8;
+    }
+
+    .rules-list li::before {
+      content: counter(rule) ". ";
+      color: #cc0000;
+      font-weight: bold;
+    }
+
+    .rules-list li:last-child { border-bottom: none; }
+
+    .rules-list .rule-warn {
+      color: #8b0000;
+      font-weight: bold;
+    }
+
+    /* Footer */
+    .site-footer {
+      background: #8b0000;
+      color: #ffecb3;
+      text-align: center;
+      padding: 1.5rem 1rem;
+      font-size: 11px;
+      line-height: 2;
+      border-top: 3px solid #ffd700;
+    }
+
+    .site-footer a { color: #ffd700; text-decoration: none; }
+
+    /* Bookmark indicator */
+    .bookmark-bar {
+      background: #e8e0d0;
+      border-bottom: 1px solid #ccc;
+      padding: 4px 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: #666;
+    }
+
+    .bookmark-bar .fav {
+      width: 14px;
+      height: 14px;
+      background: #ffd700;
+      clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+      flex-shrink: 0;
+    }
+
+    .bookmark-bar .url {
+      color: #333;
+      font-family: 'Courier New', monospace;
+      font-size: 10px;
+    }
+
+    /* Ashui's note overlay */
+    .ashui-note {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: rgba(0,0,0,0.85);
+      color: #2dd4bf;
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-family: 'Courier New', monospace;
+      max-width: 300px;
+      z-index: 100;
+      opacity: 0;
+      transition: opacity 1s;
+      line-height: 1.6;
+    }
+
+    .ashui-note.visible { opacity: 1; }
+
+    .ashui-note .note-header {
+      color: #8b949e;
+      font-size: 10px;
+      margin-bottom: 6px;
+      border-bottom: 1px solid #30363d;
+      padding-bottom: 4px;
+    }
+
+    .ashui-note .note-link {
+      display: block;
+      margin-top: 8px;
+      color: #58a6ff;
+      text-decoration: none;
+      font-size: 11px;
+    }
+
+    .ashui-note .note-link:hover { text-decoration: underline; }
+
+    /* Back link */
+    .back-to-investigation {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      background: rgba(0,0,0,0.7);
+      color: #2dd4bf;
+      padding: 6px 12px;
+      border-radius: 4px;
+      font-size: 11px;
+      text-decoration: none;
+      z-index: 200;
+      font-family: 'Courier New', monospace;
+    }
+
+    .back-to-investigation:hover { background: rgba(0,0,0,0.9); }
+  </style>
+</head>
+<body>
+
+  <a href="index.html" class="back-to-investigation">← 返回论坛</a>
+
+  <div class="bookmark-bar">
+    <div class="fav"></div>
+    <span>收藏夹：</span>
+    <span class="url">http://www.chaoshenggong.cn/index.html</span>
+  </div>
+
+  <div class="site-banner">
+    <h1>潮 生 宫</h1>
+    <div class="subtitle">埕尾村 · 六百年海祀传承</div>
+    <div class="english">Chaosheng Temple · Chengwei Village · Since 1368</div>
+  </div>
+
+  <div class="announcement-bar">
+    <span class="label">公告</span>
+    <span class="scroll-text">欢迎参观埕尾村潮生宫官方网站。本宫始建于洪武元年（1368），迄今六百余年。如需参观请提前联系庙祝林水伯（电话：0595-8823-XXXX）。七月大潮期间庙宇不对外开放，敬请谅解。</span>
+  </div>
+
+  <nav class="site-nav">
+    <a href="#" class="active">首页</a>
+    <a href="#temple">庙宇简介</a>
+    <a href="#ceremony">还潮大典</a>
+    <a href="#history">历届记录</a>
+    <a href="#visit">参观须知</a>
+    <a href="#guestbook">留言簿</a>
+  </nav>
+
+  <div class="main-wrap">
+    <div class="content-area">
+
+      <div class="panel">
+        <div class="panel-header"><span class="icon">🏛</span> 庙宇简介</div>
+        <div class="panel-body">
+          <div class="welcome-img">埕尾村 · 潮生宫 · 海不扬波</div>
+          <p>潮生宫位于福建省泉州市埕尾村，始建于明洪武元年（1368年），主祀<strong>潮生娘娘</strong>，是闽南沿海历史最悠久的海神庙宇之一。</p>
+          <p>六百年来，潮生宫一直是埕尾村及周边渔村的信仰中心。每隔二十年的农历七月初三，本宫举行<strong>"还潮大典"</strong>，以感谢大海的恩赐，祈求来年风调雨顺、渔船平安。</p>
+          <p>2006年，"还潮大典"被列入市级非物质文化遗产名录。2018年，潮生宫被评为省级文物保护单位。</p>
+          <p>现任庙祝：<strong>林水伯</strong>（任职二十年）。联系方式请见页面底部。</p>
+        </div>
+      </div>
+
+      <div class="panel" id="ceremony">
+        <div class="panel-header"><span class="icon">🌊</span> 还潮大典</div>
+        <div class="panel-body">
+          <p>"还潮"是埕尾村独有的海祀仪式，每二十年举行一次。其核心理念是<strong class="term">"人从海来，还归于海"</strong>。</p>
+          <div class="ceremony-desc">
+            <strong>仪式概述：</strong><br>
+            大潮之夜，由掷筊选定的"还潮者"在全体村民的见证下，步入海中，完成"还潮"。仪式象征人与海的契约——潮水带来渔获与平安，二十年后，以人还之。<br><br>
+            <strong>选人方式：</strong>由庙祝在潮生娘娘前掷筊，连掷三次均为圣筊者即为选定之人。<br><br>
+            <strong>注意事项：</strong>被选者不得拒绝，不得逃离。这是六百年来的规矩。
+          </div>
+          <p>本大典严格遵守传统仪轨，全程由庙祝主持。历届大典均顺利完成（1999年除外）。</p>
+          <p style="font-size:11px; color:#999;">注：2024年度大典将于农历七月初三举行。届时不对外开放。</p>
+        </div>
+      </div>
+
+      <div class="panel" id="history">
+        <div class="panel-header"><span class="icon">📜</span> 历届还潮记录</div>
+        <div class="panel-body">
+          <p style="font-size:12px; color:#888; margin-bottom:10px;">以下为部分有记载的历届还潮者名单（完整名册存放于宫内）：</p>
+          <table class="name-table">
+            <tr>
+              <th>年份</th>
+              <th>还潮者</th>
+              <th>状态</th>
+            </tr>
+            <tr><td>洪武二十年（1387）</td><td>陈氏女</td><td class="struck">已完成</td></tr>
+            <tr><td>永乐二年（1404）</td><td>黄氏子</td><td class="struck">已完成</td></tr>
+            <tr><td>宣德九年（1434）</td><td>林氏女</td><td class="struck">已完成</td></tr>
+            <tr><td>正统十九年（1454）</td><td>吴氏子</td><td class="struck">已完成</td></tr>
+            <tr><td>成化十年（1474）</td><td>张氏女</td><td class="struck">已完成</td></tr>
+            <tr><td style="color:#999;">……</td><td style="color:#999;">（共二十一任）</td><td style="color:#999;">……</td></tr>
+            <tr><td>光绪二年（1876）</td><td>何氏女</td><td class="struck">已完成</td></tr>
+            <tr><td>民国十三年（1924）</td><td>陈氏子</td><td class="struck">已完成</td></tr>
+            <tr><td>1944年</td><td>林氏子</td><td class="struck">已完成</td></tr>
+            <tr><td>1964年</td><td>黄氏女</td><td class="struck">已完成</td></tr>
+            <tr><td>1979年</td><td>吴氏子</td><td class="struck">已完成</td></tr>
+            <tr class="year-1999">
+              <td>1999年</td>
+              <td>████（姓名隐去）</td>
+              <td><span class="note-1999">不收。仪式中止。</span></td>
+            </tr>
+            <tr>
+              <td>2004年</td>
+              <td style="color:#8b0000;">——</td>
+              <td style="color:#8b0000; font-size:11px;">二十三人失踪。簿上无名。</td>
+            </tr>
+            <tr style="background:#fff0f0;">
+              <td><strong>2024年</strong></td>
+              <td style="color:#8b0000;">（簿上待填）</td>
+              <td style="color:#8b0000;">待填</td>
+            </tr>
+          </table>
+          <p style="font-size:11px; color:#999; margin-top:8px;">* 1999年仪式因"娘娘不收"中止，原因未公开。<br>* 2004年因簿上缺名，娘娘自行收取，造成重大损失。<br>* 2024年度人选未定。各家如有外来生人在村内落脚，请即报庙中登记。</p>
+        </div>
+      </div>
+
+      <div class="panel" id="visit">
+        <div class="panel-header"><span class="icon">📋</span> 参观须知</div>
+        <div class="panel-body">
+          <p style="margin-bottom:10px;">欢迎各界人士前来参观。请遵守以下规定：</p>
+          <ul class="rules-list">
+            <li>参观时间：每日 08:00 — 17:00（农历七月除外）</li>
+            <li>进入正殿请脱鞋，禁止拍照</li>
+            <li>请勿触碰宫内任何碑刻、簿册、法器</li>
+            <li>请勿在宫内大声喧哗或提及"还潮"相关话题</li>
+            <li class="rule-warn">农历七月期间，请勿靠近海边。请勿在夜间外出。</li>
+            <li>如遇潮水异常退去，请立即返回室内，关好门窗，不要看向海面</li>
+            <li class="rule-warn">如有人告知您"被选中了"，请勿惊慌。这不是真的。请立即联系庙祝。</li>
+            <li>本宫不对参观者在村内发生的一切意外负责</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="panel" id="guestbook">
+        <div class="panel-header"><span class="icon">📝</span> 留言簿</div>
+        <div class="panel-body">
+          <div class="guestbook-entry">
+            <span class="gb-name">游客陈先生</span>
+            <span class="gb-date">2024-06-15</span>
+            <div class="gb-text">庙宇很古朴，庙祝林伯人很好，带我们参观了正殿。就是村里气氛有点怪，村民好像不太愿意跟外来人说话。</div>
+            <div class="gb-reply">管理员回复：感谢您的来访。村民性格内向，并非不友好。欢迎再次光临。</div>
+          </div>
+          <div class="guestbook-entry">
+            <span class="gb-name">背包客小林</span>
+            <span class="gb-date">2024-03-22</span>
+            <div class="gb-text">请问七月还能去参观吗？我看网上说那边有个什么仪式很想看。</div>
+            <div class="gb-reply">管理员回复：农历七月为仪式筹备期，不对外开放。请在其他月份来访。</div>
+          </div>
+          <div class="guestbook-entry">
+            <span class="gb-name">匿名</span>
+            <span class="gb-date">2023-08-01</span>
+            <div class="gb-text">你们那个"还潮"到底是怎么回事？我朋友去了埕尾村之后就变了一个人。他说他"被选中了"。他现在天天往海边跑。你们是不是搞了什么邪教？</div>
+            <div class="gb-reply">管理员回复：本宫为合法登记的宗教活动场所，受政府监管。请勿听信谣言。如您朋友有心理困扰，建议就医。</div>
+          </div>
+          <div class="guestbook-entry">
+            <span class="gb-name">渔夫老张</span>
+            <span class="gb-date">2022-07-10</span>
+            <div class="gb-text">我是埕尾村人。今年又是大年。求娘娘保佑。求求了。不要再出事了。</div>
+          </div>
+          <div class="guestbook-entry">
+            <span class="gb-name">匿名</span>
+            <span class="gb-date">2019-11-20</span>
+            <div class="gb-text">有人知道1999年到底发生了什么吗？我爷爷是那年的庙祝，他死前一直说"不收不收"。到底是谁不收？</div>
+            <div class="gb-reply">管理员回复：此留言已标记。如需了解历史，请联系庙祝。</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="sidebar">
+      <div class="panel">
+        <div class="panel-header"><span class="icon">📅</span> 农历</div>
+        <div class="panel-body">
+          <div class="calendar-box">
+            <div class="lunar">甲辰年 · 六月</div>
+            <div class="solar">2024年 · 夏</div>
+            <div class="note">距七月初三还有 18 天</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header"><span class="icon">🌤</span> 埕尾天气</div>
+        <div class="panel-body">
+          <div class="weather-box">
+            <div class="temp">32°C</div>
+            <div>多云转晴 · 东南风3级</div>
+            <div style="margin-top:6px; font-size:11px; color:#999;">
+              潮汐：大潮<br>
+              日出 05:38 · 日落 18:52
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header"><span class="icon">📰</span> 最新动态</div>
+        <div class="panel-body">
+          <ul class="news-list">
+            <li>
+              <span class="news-title highlight">2024年度还潮大典筹备中</span>
+              <span class="news-date">08-01</span>
+            </li>
+            <li>
+              <span class="news-title">潮生宫修缮工程竣工</span>
+              <span class="news-date">06-15</span>
+            </li>
+            <li>
+              <span class="news-title">省级文保单位牌匾揭幕</span>
+              <span class="news-date">05-20</span>
+            </li>
+            <li>
+              <span class="news-title">林水伯庙祝任职二十周年</span>
+              <span class="news-date">03-01</span>
+            </li>
+            <li>
+              <span class="news-title">2023年度平安祭海活动回顾</span>
+              <span class="news-date">2023-09</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header"><span class="icon">🔗</span> 相关链接</div>
+        <div class="panel-body" style="font-size:12px;">
+          <p><a href="index.html" style="color:#333;">埕尾村论坛</a></p>
+          <p style="color:#999; font-size:11px; margin-top:4px;">泉州市非物质文化遗产保护中心</p>
+          <p style="color:#999; font-size:11px;">闽南民间信仰研究会</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="site-footer" id="temple">
+    <p>埕尾村潮生宫 · 版权所有</p>
+    <p>地址：福建省泉州市埕尾村庙前路1号</p>
+    <p>庙祝：林水伯 · 联系电话：0595-8823-XXXX</p>
+    <p style="margin-top:8px; font-size:10px; color:rgba(255,236,179,0.5);">
+      本网站最后更新：2024年8月1日 | 访问量：13,847
+    </p>
+    <p style="margin-top:4px; font-size:10px; color:rgba(255,236,179,0.4);">
+      潮水会退。娘娘会等。
+    </p>
+  </div>
+
+  <div class="ashui-note" id="ashui-note">
+    <div class="note-header">阿水的浏览器笔记 · 2024.08.05</div>
+    这站做得跟真的一样，对吧？<br>
+    你自己去看参观须知，第六条第七条。<br>
+    还有留言簿——那个匿名留言的人，后来呢？<br>
+    <a href="social.html" class="note-link">← 返回阿水的账号</a>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      setTimeout(() => {
+        document.getElementById('ashui-note').classList.add('visible');
+      }, 3000);
+
+      document.querySelectorAll('.site-nav a').forEach(a => {
+        a.addEventListener('click', (e) => {
+          e.preventDefault();
+          const target = a.getAttribute('href');
+          if (target === '#') return;
+          const el = document.querySelector(target);
+          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+      });
+    });
+  </script>
+
+</body>
+</html>

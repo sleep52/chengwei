@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>阿水 @ashui_2001 · 潮闻</title>
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/social-app.css">
+  <style>
+    .profile-banner {
+      height: 120px;
+      background: linear-gradient(135deg, #0d3b4f, #1a6b8a);
+      background-image: url('assets/social_banner.png');
+      background-size: cover;
+      background-position: center;
+      position: relative;
+    }
+
+    .profile-info {
+      padding: 0 1rem;
+      position: relative;
+    }
+
+    .profile-avatar {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: #2a3a4a;
+      border: 3px solid #15202b;
+      margin-top: -32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+    }
+
+    .profile-details {
+      margin-top: 0.5rem;
+    }
+
+    .profile-details .name {
+      font-size: 1.1rem;
+      font-weight: 700;
+    }
+
+    .profile-details .handle {
+      font-size: 0.85rem;
+      color: #8899a6;
+    }
+
+    .profile-details .bio {
+      font-size: 0.9rem;
+      margin-top: 0.5rem;
+      line-height: 1.5;
+    }
+
+    .profile-details .meta {
+      font-size: 0.8rem;
+      color: #8899a6;
+      margin-top: 0.5rem;
+      display: flex;
+      gap: 1rem;
+    }
+
+    /* Posts */
+    .post {
+      padding: 1rem;
+      border-bottom: 1px solid #38444d;
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    .post-avatar-small {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #2a3a4a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      flex-shrink: 0;
+    }
+
+    .post-content { flex: 1; }
+
+    .post-content .post-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .post-content .post-header .name {
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+
+    .post-content .post-header .handle {
+      color: #8899a6;
+      font-size: 0.8rem;
+    }
+
+    .post-content .post-header .time {
+      color: #8899a6;
+      font-size: 0.75rem;
+      margin-left: auto;
+    }
+
+    .post-content .post-text {
+      font-size: 0.9rem;
+      line-height: 1.6;
+      margin-bottom: 0.5rem;
+    }
+
+    .post-content .post-image {
+      background: #2a3a4a;
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 0.5rem;
+      aspect-ratio: 16/9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #8899a6;
+      font-size: 0.8rem;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .post-content .post-image img {
+      width: 100%; height: 100%; object-fit: cover;
+      position: absolute; top: 0; left: 0;
+    }
+
+    .post-content .post-image .img-label {
+      position: absolute;
+      bottom: 0.5rem;
+      right: 0.5rem;
+      background: rgba(0,0,0,0.7);
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.65rem;
+      font-family: var(--font-mono);
+    }
+
+    .post-content .post-stats {
+      display: flex;
+      gap: 2rem;
+      font-size: 0.75rem;
+      color: #8899a6;
+    }
+
+    .post-content .post-stats span { cursor: pointer; }
+
+    .post-text .tag { color: #1d9bf0; }
+    .post-text .warn { color: #f4212e; }
+
+  </style>
+</head>
+<body data-page="social">
+
+  <div id="login-gate">
+    <form class="login-card" id="login-form" autocomplete="off">
+      <div class="login-brand">潮闻 · 手机版</div>
+      <div class="login-title">查看 @ashui_2001 的主页需要先登录</div>
+      <div class="login-field">
+        <label for="lg-u">账号</label>
+        <input id="lg-u" type="text" placeholder="手机号 / 用户名">
+      </div>
+      <div class="login-field">
+        <label for="lg-p">密码</label>
+        <input id="lg-p" type="password" placeholder="••••••••">
+      </div>
+      <button class="login-btn" type="submit">登录</button>
+      <div class="login-err" id="lg-err"></div>
+      <div class="login-hint" id="lg-hint">阿月在论坛第一楼里把她弟弟的账号密码贴上去了。回去看一眼。</div>
+      <div class="login-foot">此账号最后一次登录：2024.08.19 03:47</div>
+      <a class="login-back" href="index.html">← 返回论坛</a>
+    </form>
+  </div>
+
+  <div class="social-header">
+    <a class="back" href="index.html">← 返回论坛</a>
+    <div class="profile-name">阿水</div>
+    <div class="post-count">47 条动态</div>
+  </div>
+
+  <div class="profile-banner"></div>
+
+  <div class="profile-info">
+    <div class="profile-avatar">🌊</div>
+    <div class="profile-details">
+      <div class="name">阿水</div>
+      <div class="handle">@ashui_2001</div>
+      <div class="bio">跑野点。空心村 / 没人接的庙 / 废弃学校。不接私活，不带路。</div>
+      <div class="meta">
+        <span>📍 闽南 · 常年在路上</span>
+        <span> 2001年生</span>
+        <span>🔗 47 动态 · 128 关注 · 89 粉丝</span>
+      </div>
+    </div>
+  </div>
+
+  <div id="feed">
+
+    <div class="post" style="opacity: 0.5;">
+      <div class="post-avatar-small">🌊</div>
+      <div class="post-content">
+        <div class="post-header">
+          <span class="name">阿水</span>
+          <span class="handle">@ashui_2001</span>
+          <span class="time">8月19日</span>
+        </div>
+        <div class="post-text" style="font-family: var(--font-mono); font-size: 0.8rem; color: #8899a6;">[此条动态已删除]</div>
+      </div>
+    </div>
+
+    <div class="post">
+      <div class="post-avatar-small">🌊</div>
+      <div class="post-content">
+        <div class="post-header">
+          <span class="name">阿水</span>
+          <span class="handle">@ashui_2001</span>
+          <span class="time">8月17日</span>
+        </div>
+        <div class="post-text" style="color: #f4212e;">是我。</div>
+        <div class="post-stats">
+          <span>♡ 0</span>
+          <span>💬 0</span>
+          <span>↗ 0</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="post">
+      <div class="post-avatar-small">🌊</div>
+      <div class="post-content">
+        <div class="post-header">
+          <span class="name">阿水</span>
+          <span class="handle">@ashui_2001</span>
+          <span class="time">8月15日</span>
+        </div>
+        <div class="post-text">后殿那道门我推开了。里头有一本簿子。拍了几张，手抖，回去再看。</div>
+        <div class="post-image" onclick="window.location='book.html'">
+          <img src="assets/photo_13_book_corner.png" alt="还潮簿">
+          <div class="img-label">📖 点击查看</div>
+        </div>
+        <div class="post-stats">
+          <span>♡ 1</span>
+          <span>💬 0</span>
+          <span>↗ 0</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="post">
+      <div class="post-avatar-small">🌊</div>
+      <div class="post-content">
+        <div class="post-header">
+          <span class="name">阿水</span>
+          <span class="handle">@ashui_2001</span>
+          <span class="time">8月14日</span>
+        </div>
+        <div class="post-text">那天夜里在庙外头录了一段。里面有人说话，听不清讲什么，但那个调调不像念经，倒像在<span class="warn">点名</span>。</div>
+        <div class="post-image" onclick="window.location='audio.html'">
+          [ 录音文件 · temple_night_0811.wav ]
+          <div class="img-label">🎙️ 点击听录音</div>
+        </div>
+        <div class="post-stats">
+          <span>♡ 2</span>
+          <span>💬 0</span>
+          <span>↗ 0</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="post">
+      <div class="post-avatar-small">🌊</div>
+      <div class="post-content">
+        <div class="post-header">
+          <span class="name">阿水</span>
+          <span class="handle">@ashui_2001</span>
+          <span class="time">8月13日</span>
+        </div>
+        <div class="post-text">祠堂门上一张红纸，五个名字。我想知道他们自己晓不晓得。</div>
+        <div class="post-image" onclick="window.location='photos.html'">
+          <img src="assets/photo_11_five_silhouettes.png" alt="五个人的背影">
+          <div class="img-label">EXIF: 24.6183°N, 118.0894°E</div>
+        </div>
+        <div class="post-stats">
+          <span>♡ 5</span>
+          <span>💬 2</span>
+          <span>↗ 0</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="post">
+      <div class="post-avatar-small">🌊</div>
+      <div class="post-content">
+        <div class="post-header">
+          <span class="name">阿水</span>
+          <span class="handle">@ashui_2001</span>
+          <span class="time">8月11日</span>
+        </div>
+        <div class="post-text">庙里在择日子。我在门口站了半个钟头，出来进去的人没有一个看我。回去那条巷子有人跟了一段，我没敢回头。<span class="warn">#不要告诉别人我查了这个</span></div>
+        <div class="post-stats">
+          <span>♡ 3</span>
+          <span>💬 1</span>
+          <span>↗ 0</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="post">
+      <div class="post-avatar-small">🌊</div>
+      <div class="post-content">
+        <div class="post-header">
+          <span class="name">阿水</span>
+          <span class="handle">@ashui_2001</span>
+          <span class="time">8月10日</span>
+        </div>
+        <div class="post-text">找到了村里的"官方网站"。做得还挺像样的。但是你们仔细看参观须知……第七条是什么意思？<a href="temple-site.html" style="color:#1d9bf0;">→ 埕尾村潮生宫官网</a></div>
+        <div class="post-stats">
+          <span>♡ 6</span>
+          <span>💬 4</span>
+          <span>↗ 2</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="post">
+      <div class="post-avatar-small">🌊</div>
+      <div class="post-content">
+        <div class="post-header">
+          <span class="name">阿水</span>
+          <span class="handle">@ashui_2001</span>
+          <span class="time">8月8日</span>
+        </div>
+        <div class="post-text">村里就剩一家小卖部。买电池的时候老板娘问我找谁。我说住几天，没找谁。她"哦"了一声，问我"这村子有什么好拍的"。我说没什么，随便走走。她找钱找得慢得要死。</div>
+        <div class="post-stats">
+          <span>♡ 8</span>
+          <span>💬 5</span>
+          <span>↗ 0</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="post">
+      <div class="post-avatar-small">🌊</div>
+      <div class="post-content">
+        <div class="post-header">
+          <span class="name">阿水</span>
+          <span class="handle">@ashui_2001</span>
+          <span class="time">8月5日</span>
+        </div>
+        <div class="post-text">去了趟庙里。后面那道门不让进。问为什么，只说在准备东西，别的一个字不讲。我在那儿坐了半个钟头，庙祝一直站着。</div>
+        <div class="post-stats">
+          <span>♡ 2</span>
+          <span>💬 0</span>
+          <span>↗ 0</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="post">
+      <div class="post-avatar-small">🌊</div>
+      <div class="post-content">
+        <div class="post-header">
+          <span class="name">阿水</span>
+          <span class="handle">@ashui_2001</span>
+          <span class="time">8月3日</span>
+        </div>
+        <div class="post-text">住处是我自己找的，床倒是有。鱼在小卖部买的，不太会弄，煎糊了。屋里没WiFi，一到这儿流量就剩一格，传张图半小时。</div>
+        <div class="post-stats">
+          <span>♡ 1</span>
+          <span>💬 1</span>
+          <span>↗ 0</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="post">
+      <div class="post-avatar-small">🌊</div>
+      <div class="post-content">
+        <div class="post-header">
+          <span class="name">阿水</span>
+          <span class="handle">@ashui_2001</span>
+          <span class="time">8月2日</span>
+        </div>
+        <div class="post-text">到了。村子在半山那面，海味儿很重。街上没人，狗比人多。<span class="tag">#埕尾村</span></div>
+        <div class="post-image" onclick="window.location='photos.html'">
+          <img src="assets/photo_02_banyan_tree.png" alt="村口老榕树">
+          <div class="img-label">📷 点击查看照片集</div>
+        </div>
+        <div class="post-stats">
+          <span>♡ 12</span>
+          <span>💬 3</span>
+          <span>↗ 1</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="post">
+      <div class="post-avatar-small">🌊</div>
+      <div class="post-content">
+        <div class="post-header">
+          <span class="name">阿水</span>
+          <span class="handle">@ashui_2001</span>
+          <span class="time">7月28日</span>
+        </div>
+        <div class="post-text">刷了三年这个吧，头一回刷到我想去的地方。有个村留着一种祭礼，据说不是年年办。底下全在吵真假。真假有什么好吵的，去了就知道。假请好了，二号的客车。<span class="tag">#埕尾村</span> <span class="tag">#跑野点</span></div>
+        <div class="post-stats">
+          <span>♡ 31</span>
+          <span>💬 9</span>
+          <span>↗ 2</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="feed-end">— 没有更早的动态了 —</div>
+
+  </div>
+
+  <nav class="app-nav">
+    <a class="app-tab active" href="social.html"><span class="i">🏠</span><span>首页</span></a>
+    <a class="app-tab" href="social-album.html"><span class="i">🖼️</span><span>相册</span></a>
+    <a class="app-tab" href="social-dm.html"><span class="i">✉️</span><span>消息</span></a>
+  </nav>
+
+  <script src="js/state.js"></script>
+  <script src="js/social-app.js"></script>
+</body>
+</html>

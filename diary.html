@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>阿水的日记</title>
+  <link rel="stylesheet" href="css/base.css">
+  <style>
+    body { background: #2c2418; min-height: 100vh; padding-bottom: 4rem; }
+
+    .diary-header {
+      background: #3a2e20; padding: 1rem 1.5rem;
+      display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 1px solid #5a4a38; position: sticky; top: 0; z-index: 10;
+    }
+    .diary-header .back { color: #c8b89a; text-decoration: none; font-size: 0.9rem; }
+    .diary-header h2 { font-size: 1rem; color: #e8dfd0; font-family: var(--font-handwriting); }
+    .diary-header .info { font-size: 0.75rem; color: #8b7b60; }
+
+    .diary-intro {
+      max-width: 640px; margin: 1.5rem auto; padding: 0 1rem;
+      font-size: 0.8rem; color: #8b7b60; line-height: 1.6;
+    }
+    .diary-intro .tag {
+      display: inline-block; background: #4a3e2e; color: #c8b89a;
+      padding: 0.15rem 0.5rem; border-radius: 3px; font-size: 0.7rem;
+      font-family: var(--font-mono); margin-right: 0.5rem;
+    }
+
+    .notebook {
+      max-width: 640px; margin: 0 auto; padding: 0 1rem;
+    }
+
+    .page {
+      background: #f5edd8;
+      margin-bottom: 1.5rem;
+      padding: 2rem 2rem 1.5rem;
+      position: relative;
+      box-shadow: 2px 3px 12px rgba(0,0,0,0.3);
+      border-left: 3px solid #e0d4b8;
+    }
+    .page::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+      background:
+        repeating-linear-gradient(
+          0deg,
+          transparent, transparent 31px,
+          rgba(180,160,130,0.25) 31px, rgba(180,160,130,0.25) 32px
+        );
+      pointer-events: none;
+    }
+    .page::after {
+      content: '';
+      position: absolute; top: 0; right: 0; width: 40px; height: 40px;
+      background: linear-gradient(225deg, #e8dfd0 50%, transparent 50%);
+    }
+
+    .page-date {
+      font-family: var(--font-handwriting);
+      font-size: 0.85rem; color: #8b6b4a;
+      margin-bottom: 1rem; position: relative;
+    }
+    .page-date .lunar {
+      color: #b85a3a; font-size: 0.75rem;
+      margin-left: 0.5rem;
+    }
+
+    .page-text {
+      font-family: var(--font-handwriting);
+      font-size: 0.95rem; line-height: 2;
+      color: #2c1810; position: relative;
+    }
+    .page-text p {
+      margin-bottom: 0.5rem; text-indent: 2em;
+    }
+
+    .page-text .underline {
+      text-decoration: underline;
+      text-decoration-color: #b85a3a;
+      text-underline-offset: 3px;
+    }
+    .page-text .red-ink {
+      color: #a03020;
+      font-weight: bold;
+    }
+    .page-text .scribble {
+      text-decoration: line-through;
+      opacity: 0.4;
+    }
+    .page-text .pressed {
+      font-weight: bold;
+      letter-spacing: 0.1em;
+    }
+
+    .page-corner {
+      position: absolute; bottom: 0.75rem; right: 1rem;
+      font-family: var(--font-mono); font-size: 0.65rem;
+      color: #c8b89a; opacity: 0.5;
+    }
+
+    .page-stain {
+      position: absolute;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(160,130,90,0.15) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .page-final {
+      background: #f0e4c8;
+      border-left: 3px solid #a03020;
+    }
+    .page-final .page-text {
+      color: #3a1a0a;
+    }
+    .page-final .page-text .red-ink {
+      color: #a03020;
+      font-size: 1.1rem;
+    }
+
+    .page-torn {
+      background: #f5edd8;
+      border-left: 3px solid #e0d4b8;
+      min-height: 80px;
+      position: relative;
+    }
+    .page-torn::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent, transparent 31px,
+        rgba(180,160,130,0.25) 31px, rgba(180,160,130,0.25) 32px
+      );
+      pointer-events: none;
+    }
+    .page-torn .tear-line {
+      position: absolute; top: 50%; left: 0; right: 0;
+      border-top: 2px dashed #c8b89a;
+    }
+    .page-torn .tear-label {
+      position: absolute; top: calc(50% - 10px); left: 50%;
+      transform: translateX(-50%);
+      background: #f5edd8; padding: 0 0.75rem;
+      font-size: 0.7rem; color: #8b6b4a;
+      font-family: var(--font-mono);
+      white-space: nowrap;
+    }
+
+    .diary-footer {
+      max-width: 640px; margin: 2rem auto; padding: 0 1rem;
+      text-align: center;
+    }
+    .diary-footer .note {
+      font-size: 0.75rem; color: #6b5b40;
+      font-family: var(--font-mono);
+      padding: 1rem; border: 1px dashed #5a4a38;
+    }
+
+  </style>
+</head>
+<body data-page="diary">
+
+  <div class="diary-header">
+    <a href="photos.html" class="back">&larr; 返回照片集</a>
+    <h2>阿水的笔记本</h2>
+    <span class="info">共6页 · 后四页被撕去</span>
+  </div>
+
+  <div class="diary-intro">
+    <span class="tag">物证 #D-001</span>
+    A5本，棕色封面，阿水随身带着的那本。好几页有海水泡过的印子。按原来的页序扫描，撕口也在原位。
+  </div>
+
+  <div class="notebook">
+
+    <div class="page">
+      <div class="page-date">
+        2024年8月2日
+        <span class="lunar">六月十六</span>
+      </div>
+      <div class="page-text">
+        <p>埕尾。客车把我丢在村口界碑那儿就走了。碑上那两个字刻得很浅，得蹲下去才看得清。</p>
+        <p>房子是我自己挑的，巷子最底下一间，锁锈死了，推开一屋子灰。瓦上全长草。龙头拧开水是黄的，放半天才清。碗筷得自己洗。</p>
+        <p>没人来问我是谁。这地方一天到头看不见一个生人，我反倒不好奇了——不是没人，是躲着。</p>
+        <p>码头上船少了一半。巷子口坐着几个小孩，大人一个没有。有个老头在墙根补网，盯了我半天，问我找谁。我说没找谁，住几天。他把网兜扔下就走了。</p>
+        <p>晚上蚊子多，灯一开全是。</p>
+        <p>庙在半山腰，从村口就能看见。门关着。<span class="underline">明天上去看看</span>。</p>
+        <p style="font-size:0.85rem;color:#5a3a1a;">（这页右下角让水泡过，有两个字糊了）</p>
+      </div>
+      <span class="page-corner">p.1</span>
+      <div class="page-stain" style="width:80px;height:60px;top:20px;right:30px;"></div>
+    </div>
+
+    <div class="page">
+      <div class="page-date">
+        2024年8月5日
+        <span class="lunar">六月十九</span>
+      </div>
+      <div class="page-text">
+        <p>去了潮生宫。庙祝林水伯问我从哪儿来。我说城里。他给我倒了茶，茶还没喝完，他站起来两回。我说想去后头看看，他<span class="underline">不给</span>，就说"后面不开放"。</p>
+        <p>前头能看的我都看了。碑多，最老一块是光绪的。有块碑拿红布蒙着，我问那是什么，水伯就说两个字，别碰。</p>
+        <p>庙里贴了告示，字写得挺用力——<span class="red-ink">大潮日将至，各户备办祭品</span>。红纸右下角另有两个字，<span class="underline">还潮</span>。我问这两个字讲什么，水伯说<span class="red-ink">七月初三</span>，说完就不理我了。</p>
+        <p>我回去翻了日历。今年农历七月初三，是公历<span class="pressed">8月19号</span>。还有两个星期。</p>
+        <p>还潮。这两个字我来之前查了一个星期，什么都没查着。到了这儿，问三个人，三个人都让我去前头烧香。</p>
+        <p>拍了几张。走的时候水伯站在门口，我一直到拐过弯才敢回头。</p>
+      </div>
+      <span class="page-corner">p.2</span>
+    </div>
+
+    <div class="page">
+      <div class="page-date">
+        2024年8月8日
+        <span class="lunar">六月廿二</span>
+      </div>
+      <div class="page-text">
+        <p>这几天在村里到处走，相机里多了几十张。十间房里六间锁着，门缝里塞的纸都发黄了。</p>
+        <p>就是白天走一条巷子，从头到尾碰不着一个人。狗趴在家门口，也不叫。</p>
+        <p>老头老太三个人一堆，我相机一举过去就不说了。有个阿婆看我拿本子记东西，直接进屋把门带上。</p>
+        <p>今天在海边碰上一群小孩，拍着圈唱一首歌：</p>
+        <p style="text-indent:0; text-align:center; font-style:italic; color:#5a3a1a;">
+          "潮水来，潮水去，娘娘点名不要急。"
+        </p>
+        <p>我问他们跟谁学的，说"奶奶教的"。再问就散了。</p>
+        <p>我问过那个补网的老头。老头沉默了很久，说：<span class="red-ink">"你别问了。过完七月你就走。"</span></p>
+        <p>晚上把窗关上了，风还是进来。早上出门看见门口那双胶鞋倒了，我昨天是立着的。</p>
+      </div>
+      <span class="page-corner">p.3</span>
+      <div class="page-stain" style="width:100px;height:80px;bottom:40px;left:20px;"></div>
+    </div>
+
+    <div class="page">
+      <div class="page-date">
+        2024年8月11日
+        <span class="lunar">六月廿五</span>
+      </div>
+      <div class="page-text">
+        <p>问不出来。这个词在这个村里是有的，可没人讲。水伯一听就问我在哪儿看到的，脸都变了，让我别在庙前头讲。</p>
+        <p>傍晚我拎了两瓶酒，在那堵墙根底下等。老头网没补完，喝到半瓶他才松口：<span class="underline">"不是回回都顺的。有一年没还成，出了大事。"</span></p>
+        <p>我问他哪一年。他把杯子推过来，讲别的事了。问到第三遍，他说你要还是聪明，就别把这个往网上发，给人看见不好。</p>
+        <p>他讲"给人看见"。庙里、路上、祠堂门口都有人坐着。他们说话都压着。</p>
+        <p>晚上吃了点东西全吐了。可能是酒坏了。</p>
+        <p style="font-size:0.8rem;color:#5a3a1a;">（这几行让水泡开了，有几个字描过重）</p>
+      </div>
+      <span class="page-corner">p.4</span>
+    </div>
+
+    <div class="page">
+      <div class="page-date">
+        2024年8月13日
+        <span class="lunar">六月廿七</span>
+      </div>
+      <div class="page-text">
+        <p>祠堂门上一张红纸，五个名字，写得工工整整。名单是怎么定下来的，没人讲。</p>
+        <p>今年名单上有五个人。我一个个数过，来来回回就是村中那几姓。</p>
+        <p><span class="scribble">名字我先记下来。有两个我在巷子里见过，剩下三个对不上脸。</span></p>
+        <p>写到这儿外头有人走过，在墙根底下站了很久。不知道是不是找我。</p>
+        <p>簿子该是在后殿。白天进不去，门口一直有人坐着。等水伯哪天不在。</p>
+      </div>
+      <span class="page-corner">p.5</span>
+    </div>
+
+    <div class="page">
+      <div class="page-date">
+        2024年8月15日
+        <span class="lunar">六月廿九</span>
+      </div>
+      <div class="page-text">
+        <p>今晚进了后殿。水伯傍晚出去了，一直没回来，我在门口站了能有十来分钟才推门。</p>
+        <p>簿子找到了。比我想象的小，纸都脆了，翻页得捏着角。封面三个字，还潮簿。</p>
+        <p>名字一行一行往下排，中间有空格。我数到最后一格，那一格是新的，墨还没干透。我用指肚碰了一下边角，蹭下来一点。</p>
+        <p>那一格上头<span class="pressed">有铅笔写过，擦过，擦得不干净</span>。我把手机贴着纸打光才看出来，<span class="underline">不是我的名字</span>。有人先写上去，又给划掉了。</p>
+        <p><span class="red-ink" style="font-size:1.05rem;">墨上写的是我的名字。</span></p>
+        <p>写不下去。手一直在抖，字丑成这样。</p>
+      </div>
+      <span class="page-corner">p.6</span>
+      <div class="page-stain" style="width:120px;height:90px;top:30px;left:40px; background: radial-gradient(circle, rgba(160,48,32,0.1) 0%, transparent 70%);"></div>
+    </div>
+
+    <div class="page page-torn">
+      <div class="tear-line"></div>
+      <div class="tear-label">[ 八月十六以后的四页被撕掉了 ]</div>
+    </div>
+
+  </div>
+
+  <div class="diary-footer">
+    <div class="note">
+      物证编号 D-001 ~ D-006。八月十六日至八月十九日无记录。<br>
+      后四页自装订处撕去，屋内未寻得纸屑。撕口平整，不像仓促中撕的。<br>
+      笔记本由阿月（林小月）提供。据称阿水离开前把它留在了他住的那间空屋桌上，摊开就停在八月十五那天。
+    </div>
+  </div>
+
+
+  
+  <script src="js/state.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      GameState.set('currentAct', 2);
+      GameState.recordClue('diary_read');
+
+      const pages = document.querySelectorAll('.page:not(.page-torn)');
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.style.opacity = '1';
+            entry.target.style.transform = 'translateY(0)';
+            const pageNum = entry.target.querySelector('.page-corner');
+            if (pageNum) {
+              const num = parseInt(pageNum.textContent.replace('p.', ''));
+              if (num >= 6) GameState.recordClue('diary_deep');
+            }
+          }
+        });
+      }, { threshold: 0.3 });
+
+      pages.forEach(page => {
+        page.style.opacity = '0';
+        page.style.transform = 'translateY(20px)';
+        page.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+        observer.observe(page);
+      });
+    });
+  </script>
+</body>
+</html>

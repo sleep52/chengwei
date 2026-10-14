@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>阿水的照片集 — 17张照片</title>
+  <link rel="stylesheet" href="css/base.css">
+  <style>
+    body { background: #111; color: #ccc; font-family: var(--font-body); min-height: 100vh; padding-bottom: 2rem; }
+
+    .photo-header {
+      background: #1a1a1a; padding: 1rem 1.5rem;
+      display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 1px solid #333; position: sticky; top: 0; z-index: 10;
+    }
+    .photo-header .back { color: #ccc; text-decoration: none; font-size: 0.9rem; }
+    .photo-header h2 { font-size: 1rem; color: #e0e0e0; }
+    .photo-header .count { font-size: 0.8rem; color: #666; }
+
+    .photo-hint {
+      background: #1a1a1a; padding: 0.75rem 1.5rem;
+      font-size: 0.75rem; color: #666; border-bottom: 1px solid #222;
+      font-family: var(--font-mono);
+    }
+
+    .photo-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px; padding: 2px;
+    }
+
+    .photo-item {
+      aspect-ratio: 1;
+      background: #222;
+      position: relative;
+      cursor: pointer;
+      overflow: hidden;
+      transition: all 0.3s;
+    }
+    .photo-item:hover { opacity: 0.8; }
+
+    .photo-item img.photo-img {
+      width: 100%; height: 100%; object-fit: cover;
+      display: block;
+    }
+
+    .photo-item .photo-placeholder {
+      width: 100%; height: 100%;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      font-size: 0.7rem; color: #555;
+      padding: 0.5rem; text-align: center;
+    }
+
+    .photo-item .photo-placeholder .scene {
+      font-size: 1.5rem; margin-bottom: 0.5rem;
+    }
+
+    .photo-item .photo-placeholder .desc {
+      font-size: 0.65rem; color: #444; line-height: 1.3;
+    }
+
+    .photo-item .exif-tag {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      background: rgba(0,0,0,0.8);
+      padding: 0.3rem 0.5rem;
+      font-size: 0.55rem; color: #888;
+      font-family: var(--font-mono);
+      opacity: 0; transition: opacity 0.3s;
+    }
+    .photo-item:hover .exif-tag { opacity: 1; }
+
+    .photo-item .clue-marker {
+      position: absolute; top: 0.5rem; right: 0.5rem;
+      width: 8px; height: 8px;
+      background: #1d9bf0;
+      border-radius: 50%;
+      opacity: 0;
+    }
+    .photo-item.has-clue .clue-marker { opacity: 1; }
+
+    /* Photo Modal */
+    .photo-modal {
+      display: none;
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.95);
+      z-index: 600;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+    .photo-modal.active { display: flex; }
+
+    .photo-modal .modal-image {
+      max-width: 500px; width: 100%;
+      background: #222;
+      aspect-ratio: 4/3;
+      display: flex; align-items: center; justify-content: center;
+      flex-direction: column;
+      border: 1px solid #444;
+      position: relative;
+    }
+
+    .photo-modal .modal-image img.modal-img {
+      width: 100%; height: 100%; object-fit: contain;
+    }
+
+    .photo-modal .modal-image .big-scene {
+      font-size: 4rem; margin-bottom: 1rem;
+    }
+
+    .photo-modal .modal-image .big-desc {
+      font-size: 0.9rem; color: #999;
+    }
+
+    .photo-modal .modal-exif {
+      max-width: 500px; width: 100%;
+      margin-top: 1rem;
+      background: #1a1a1a;
+      border: 1px solid #333;
+      padding: 1rem;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: #888;
+    }
+
+    .photo-modal .modal-exif .exif-row {
+      display: flex; justify-content: space-between;
+      padding: 0.3rem 0;
+      border-bottom: 1px solid #222;
+    }
+
+    .photo-modal .modal-exif .exif-row .label { color: #666; }
+    .photo-modal .modal-exif .exif-row .value { color: #aaa; }
+    .photo-modal .modal-exif .exif-row .value.coord { color: #1d9bf0; cursor: pointer; }
+    .photo-modal .modal-exif .exif-row .value.coord:hover { text-decoration: underline; }
+
+    .photo-modal .modal-note {
+      max-width: 500px; width: 100%;
+      margin-top: 0.75rem;
+      font-family: var(--font-handwriting);
+      font-size: 0.85rem;
+      color: #d4a574;
+      font-style: italic;
+    }
+
+    .photo-modal .close-btn {
+      position: absolute; top: 1rem; right: 1.5rem;
+      color: #666; font-size: 1.5rem; cursor: pointer;
+      background: none; border: none;
+    }
+    .photo-modal .close-btn:hover { color: #fff; }
+
+    .photo-modal .nav-btn {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      color: #666; font-size: 2rem; cursor: pointer;
+      background: none; border: none; padding: 1rem;
+    }
+    .photo-modal .nav-btn:hover { color: #fff; }
+    .photo-modal .nav-prev { left: 1rem; }
+    .photo-modal .nav-next { right: 1rem; }
+
+    /* Bottom nav */
+
+    /* Special photos */
+    .photo-item.special {
+      border: 1px solid #8b0000;
+    }
+
+    .photo-item.last-photo {
+      border: 2px solid #f4212e;
+      animation: lastPhotoPulse 3s ease infinite;
+    }
+
+    @keyframes lastPhotoPulse {
+      0%, 100% { border-color: #f4212e; }
+      50% { border-color: #8b0000; }
+    }
+  </style>
+</head>
+<body data-page="photos">
+
+  <div class="photo-header">
+    <a class="back" href="social.html">← 返回阿水的账号</a>
+    <h2>阿水的照片集</h2>
+    <div class="count">17 张</div>
+  </div>
+
+  <div class="photo-hint">
+    点开可以看大图和EXIF。有几张带着坐标，可以复制。
+  </div>
+
+  <div class="photo-grid" id="photo-grid"></div>
+
+  <div class="photo-modal" id="photo-modal">
+    <button class="close-btn" onclick="closeModal()">×</button>
+    <button class="nav-btn nav-prev" onclick="navPhoto(-1)">‹</button>
+    <button class="nav-btn nav-next" onclick="navPhoto(1)">›</button>
+    <div class="modal-image" id="modal-image"></div>
+    <div class="modal-exif" id="modal-exif"></div>
+    <div class="modal-note" id="modal-note"></div>
+  </div>
+
+
+  
+  <script src="js/state.js"></script>
+  <script>
+    const photos = [
+      { scene: '', desc: '村口日出', img: 'assets/photo_01_village_sunrise.png', date: '2024.08.02', time: '06:12', coord: '24.6183°N, 118.0894°E', note: '到的第一天。风太大，麦克风一直响。', clue: false },
+      { scene: '🌳', desc: '老榕树', img: 'assets/photo_02_banyan_tree.png', date: '2024.08.02', time: '08:30', coord: '24.6180°N, 118.0891°E', note: '帖子里那张图拍的就是这棵树。真站到底下，比图上老得多。', clue: false },
+      { scene: '🏠', desc: '老屋', img: 'assets/photo_03_old_house.png', date: '2024.08.03', time: '10:15', coord: '24.6178°N, 118.0889°E', note: '灰很厚。脚印是我自己的，没别的。', clue: false },
+      { scene: '️', desc: '潮生宫外景', img: 'assets/photo_04_temple_exterior.png', date: '2024.08.05', time: '09:00', coord: '24.6185°N, 118.0896°E', note: '庙门开着，里头有声音。我没进去。', clue: true },
+      { scene: '🕯️', desc: '庙内供桌', img: 'assets/photo_05_temple_altar.png', date: '2024.08.05', time: '09:15', coord: '24.6185°N, 118.0896°E', note: '供品是新鲜的，苹果上还有水珠。', clue: false },
+      { scene: '👴', desc: '庙祝林水伯', img: 'assets/photo_06_temple_keeper.png', date: '2024.08.07', time: '14:20', coord: '24.6185°N, 118.0896°E', note: '他看了我一眼，没说话。', clue: false },
+      { scene: '🌊', desc: '海面·清晨', img: 'assets/photo_07_sea_morning.png', date: '2024.08.08', time: '05:45', coord: '24.6200°N, 118.0920°E', note: '退得老远，礁石全翻出来了。', clue: false },
+      { scene: '🚣', desc: '渔船归港', img: 'assets/photo_08_fishing_boats.png', date: '2024.08.09', time: '16:30', coord: '24.6190°N, 118.0910°E', note: '就三条船。晚上码头空着，缆绳都没人收。', clue: false },
+      { scene: '🏘️', desc: '村中巷道', img: 'assets/photo_09_village_alley.png', date: '2024.08.10', time: '11:00', coord: '24.6175°N, 118.0885°E', note: '走了半天没碰着人。有一家门没关，风在那儿把门一开一合。', clue: false },
+      { scene: '', desc: '庙门口告示', img: 'assets/photo_10_temple_notice.png', date: '2024.08.11', time: '08:00', coord: '24.6185°N, 118.0896°E', note: '告示上写着"还潮簿已更新"。', clue: true },
+      { scene: '👥', desc: '五个人的背影', img: 'assets/photo_11_five_silhouettes.png', date: '2024.08.13', time: '19:30', coord: '24.6183°N, 118.0894°E', note: '今年的候选人。我拍了他们的背影，没敢拍脸。', clue: true },
+      { scene: '🌙', desc: '庙内夜景', img: 'assets/photo_12_temple_night.png', date: '2024.08.13', time: '23:15', coord: '24.6185°N, 118.0896°E', note: '夜里又去了。里头有人在说话，一句一句，中间有停顿，像是在点名。', clue: true },
+      { scene: '📖', desc: '还潮簿一角', img: 'assets/photo_13_book_corner.png', date: '2024.08.15', time: '23:38', coord: '24.6185°N, 118.0896°E', note: '偷拍的。回去放大再看。', clue: true },
+      { scene: '️', desc: '簿子上的红圈', img: 'assets/photo_14_red_circle_closeup.png', date: '2024.08.15', time: '23:42', coord: '24.6185°N, 118.0896°E', note: '放大看了三遍。圈里那个名字我认得。', clue: true, special: true },
+      { scene: '📓', desc: '笔记本的几页', img: 'assets/photo_17_notebook_pages.png', date: '2024.08.16', time: '01:20', coord: '24.6176°N, 118.0887°E', note: '拍糊了。先存着。', clue: false, href: 'diary.html' },
+      { scene: '🌊', desc: '海边·黄昏', img: 'assets/photo_15_seaside_dusk.png', date: '2024.08.17', time: '18:20', coord: '24.6210°N, 118.0930°E', note: '在这儿站到太阳下去才回。', clue: false },
+      { scene: '🔙', desc: '背影（别人拍的）', img: 'assets/photo_16_last_photo.png', date: '2024.08.19', time: '03:30', coord: '24.6215°N, 118.0935°E', note: '这张不是我拍的。是谁拍的？', clue: false, last: true },
+    ];
+
+    let currentPhoto = 0;
+    const viewedPhotos = new Set();
+
+    function renderGrid() {
+      const grid = document.getElementById('photo-grid');
+      photos.forEach((photo, i) => {
+        const item = document.createElement('div');
+        item.className = 'photo-item' + (photo.special ? ' special' : '') + (photo.last ? ' last-photo' : '') + (photo.clue ? ' has-clue' : '');
+        if (photo.img) {
+          item.innerHTML = `
+            <img class="photo-img" src="${photo.img}" alt="${photo.desc}" loading="lazy">
+            <div class="exif-tag">${photo.coord}</div>
+            <div class="clue-marker"></div>
+          `;
+        } else {
+          item.innerHTML = `
+            <div class="photo-placeholder">
+              <div class="scene">${photo.scene}</div>
+              <div class="desc">${photo.desc}<br>${photo.date}</div>
+            </div>
+            <div class="exif-tag">${photo.coord}</div>
+            <div class="clue-marker"></div>
+          `;
+        }
+        if (photo.href) {
+          item.style.cursor = 'pointer';
+          item.addEventListener('click', () => { window.location = photo.href; });
+        } else {
+          item.addEventListener('click', () => openPhoto(i));
+        }
+        grid.appendChild(item);
+      });
+    }
+
+    function openPhoto(index) {
+      currentPhoto = index;
+      const photo = photos[index];
+      viewedPhotos.add(index);
+
+      const modal = document.getElementById('photo-modal');
+      const image = document.getElementById('modal-image');
+      const exif = document.getElementById('modal-exif');
+      const note = document.getElementById('modal-note');
+
+      if (photo.img) {
+        image.innerHTML = `<img class="modal-img" src="${photo.img}" alt="${photo.desc}">`;
+      } else {
+        image.innerHTML = `
+          <div class="big-scene">${photo.scene}</div>
+          <div class="big-desc">${photo.desc} · ${photo.date} ${photo.time}</div>
+        `;
+      }
+
+      exif.innerHTML = `
+        <div class="exif-row"><span class="label">文件名</span><span class="value">IMG_${photo.date.replace(/\./g,'')}_${photo.time.replace(':','')}.jpg</span></div>
+        <div class="exif-row"><span class="label">拍摄日期</span><span class="value">${photo.date} ${photo.time}</span></div>
+        <div class="exif-row"><span class="label">坐标</span><span class="value coord" onclick="copyCoord('${photo.coord}')">${photo.coord}</span></div>
+        <div class="exif-row"><span class="label">设备</span><span class="value">iPhone 12</span></div>
+        <div class="exif-row"><span class="label">焦距</span><span class="value">${24 + Math.floor(Math.random() * 30)}mm</span></div>
+      `;
+
+      note.textContent = photo.note ? `"${photo.note}"` : '';
+
+      modal.classList.add('active');
+
+      GameState.set('photoViewed_' + index, true);
+    }
+
+    function closeModal() {
+      document.getElementById('photo-modal').classList.remove('active');
+    }
+
+    function navPhoto(dir) {
+      currentPhoto = (currentPhoto + dir + photos.length) % photos.length;
+      openPhoto(currentPhoto);
+    }
+
+    function copyCoord(coord) {
+      navigator.clipboard.writeText(coord).catch(() => {});
+      GameState.set('coordCopied', true);
+    }
+
+    renderGrid();
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeModal();
+      if (e.key === 'ArrowLeft') navPhoto(-1);
+      if (e.key === 'ArrowRight') navPhoto(1);
+    });
+  </script>
+</body>
+</html>
