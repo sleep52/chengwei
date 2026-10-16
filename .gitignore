@@ -1,2 +1,14 @@
 # Local Netlify folder
 .netlify
+
+# 站外物料（封面、AI 原图），不上传
+cover/
+vibe_images/
+
+# 退役版本，只留本地
+_backup/
+assets/photo_14_red_circle_closeup_v1_old.png
+
+# 临时脚本/截图
+_*.js
+_*.png

@@ -1,0 +1,199 @@
+/* 潮闻 app 共用外壳：底栏、登录门、内容结束标记 */
+    body {
+      background: #15202b;
+      color: #e7e9ea;
+      font-family: var(--font-body);
+      min-height: 100vh;
+      padding-bottom: 4.8rem;
+    }
+
+    .social-header {
+      background: #1e2d3d;
+      padding: 0.75rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      border-bottom: 1px solid #38444d;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .social-header .back {
+      color: #e7e9ea;
+      font-size: 0.85rem;
+      cursor: pointer;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .social-header .back:hover { color: #1d9bf0; }
+
+    .social-header .profile-name {
+      font-weight: 700;
+      font-size: 1rem;
+    }
+
+    .social-header .post-count {
+      font-size: 0.75rem;
+      color: #8899a6;
+      margin-left: auto;
+    }
+
+    /* ---------- 登录门 ---------- */
+    #login-gate {
+      position: fixed;
+      inset: 0;
+      z-index: 999;
+      background: #0a0c0f;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+
+    #login-gate.hidden { display: none; }
+
+    .login-card {
+      width: 100%;
+      max-width: 340px;
+      background: #15202b;
+      border: 1px solid #2f3e4e;
+      border-radius: 6px;
+      padding: 1.75rem 1.5rem 1.25rem;
+    }
+
+    .login-brand {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      color: #8899a6;
+    }
+
+    .login-title {
+      font-size: 0.95rem;
+      color: #ffffff;
+      margin: 0.5rem 0 1.4rem;
+    }
+
+    .login-field { margin-bottom: 0.85rem; }
+
+    .login-field label {
+      display: block;
+      font-size: 0.7rem;
+      color: #8899a6;
+      margin-bottom: 0.3rem;
+    }
+
+    .login-field input {
+      width: 100%;
+      box-sizing: border-box;
+      background: #1b2733;
+      border: 1px solid #2f3e4e;
+      border-radius: 4px;
+      color: #ffffff;
+      padding: 0.55rem 0.6rem;
+      font-size: 0.85rem;
+      font-family: inherit;
+    }
+
+    .login-field input:focus { outline: none; border-color: #1d9bf0; }
+
+    .login-btn {
+      width: 100%;
+      margin-top: 0.4rem;
+      padding: 0.6rem;
+      background: #1d9bf0;
+      border: none;
+      border-radius: 20px;
+      color: #ffffff;
+      font-size: 0.85rem;
+      font-family: inherit;
+      cursor: pointer;
+    }
+
+    .login-btn:hover { background: #1a91da; }
+
+    .login-err {
+      min-height: 1.1rem;
+      margin-top: 0.7rem;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: #f4212e;
+    }
+
+    .login-hint {
+      display: none;
+      margin-top: 0.4rem;
+      font-size: 0.7rem;
+      line-height: 1.6;
+      color: #8899a6;
+    }
+
+    .login-hint.show { display: block; }
+
+    .login-foot {
+      margin-top: 1.2rem;
+      padding-top: 0.8rem;
+      border-top: 1px solid #2f3e4e;
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: #5b7083;
+    }
+
+    .feed-end,
+    .dm-end {
+      padding: 1.75rem 1rem 2rem;
+      text-align: center;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.06em;
+      color: #4a5a6a;
+    }
+
+    /* ---------- 潮闻 app 底部标签栏 ---------- */
+    .app-nav {
+      position: fixed;
+      left: 0; right: 0; bottom: 0;
+      z-index: 500;
+      display: flex;
+      background: #1e2d3d;
+      border-top: 1px solid #38444d;
+      padding: 0.25rem 0.75rem calc(0.25rem + env(safe-area-inset-bottom));
+    }
+
+    .app-nav .app-tab {
+      flex: 1 1 0;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.15rem;
+      padding: 0.45rem 0 0.35rem;
+      color: #8899a6;
+      font-size: 0.62rem;
+      letter-spacing: 0.02em;
+      text-decoration: none;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .app-nav .app-tab .i {
+      font-size: 1.15rem;
+      line-height: 1;
+      filter: grayscale(1) opacity(0.6);
+    }
+
+    .app-nav .app-tab.active { color: #1d9bf0; }
+    .app-nav .app-tab.active .i { filter: none; }
+    .app-nav .app-tab:active { background: rgba(29, 155, 240, 0.08); }
+
+    .login-back {
+      display: block;
+      margin-top: 0.9rem;
+      text-align: center;
+      font-size: 0.72rem;
+      color: #8899a6;
+      text-decoration: none;
+    }
+
+    .login-back:hover { color: #1d9bf0; }

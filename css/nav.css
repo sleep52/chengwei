@@ -1,0 +1,67 @@
+/* 全站统一的底部导航。每个页面引用本文件并使用相同的标记。 */
+
+.arg-nav {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 500;
+  display: flex;
+  align-items: stretch;
+  background: #0f1318;
+  border-top: 1px solid #2a323c;
+  padding: 0.35rem 0.25rem calc(0.35rem + env(safe-area-inset-bottom));
+}
+
+.arg-nav a {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.18rem;
+  padding: 0.4rem 0.1rem;
+  color: #6b7280;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 0.62rem;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+}
+
+.arg-nav a .ico {
+  font-size: 1.05rem;
+  line-height: 1;
+  filter: grayscale(1) opacity(0.55);
+}
+
+.arg-nav a .lbl {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.arg-nav a:hover { color: #c8ccd0; }
+.arg-nav a:hover .ico { filter: none; }
+
+.arg-nav a.active { color: #2dd4bf; }
+.arg-nav a.active .ico { filter: none; }
+
+.arg-nav a.active::before {
+  content: '';
+  position: absolute;
+  top: -0.36rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 1.7rem;
+  height: 2px;
+  background: #2dd4bf;
+}
+
+body { padding-bottom: 4.6rem; }
+
+@media (max-width: 480px) {
+  .arg-nav a { font-size: 0.55rem; }
+  .arg-nav a .ico { font-size: 0.95rem; }
+}

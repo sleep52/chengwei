@@ -203,6 +203,10 @@
     }
     .dm-composer input:focus { border-color: #3d5468; }
     .dm-composer input::placeholder { color: #5b7083; }
+    .dm-composer.off input, .dm-composer.off button { cursor: not-allowed; }
+    .dm-composer.off input { background: #101820; }
+    .dm-composer.off button { background: #2f3e4e; color: #7d8b99; }
+    .dm-off-note { font-size: 0.7rem; color: #5b7083; margin-top: 0.5rem; }
     .dm-composer button {
       flex-shrink: 0;
       background: #1d9bf0;
@@ -347,6 +351,11 @@
       <div class="dm-bubble received">你手机怎么一直没人接<div class="dm-bubble-time">8月19日 14:05</div></div>
       <div class="dm-bubble received">阿水 你回我一下 我明天就去请假过来<div class="dm-bubble-time">8月19日 22:30</div></div>
       <div class="dm-end">— 到这里就没有了 —</div>
+      <div class="dm-composer off">
+        <input type="text" placeholder="对方号已停机" disabled>
+        <button type="button" disabled>发送</button>
+      </div>
+      <div class="dm-off-note">这是阿水手机里的记录。阿月的号停机了，有话要跟她说，回论坛那个帖子里私信她。</div>
     </div>
 
     <div class="dm-thread" id="dm-friend">

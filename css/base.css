@@ -1,0 +1,142 @@
+:root {
+  --color-bg: #0a0c0f;
+  --color-bg-secondary: #111418;
+  --color-text: #c8ccd0;
+  --color-text-dim: #6b7280;
+  --color-text-faint: #3a3f47;
+  --color-accent: #2dd4bf;
+  --color-accent-dim: #1a7a6d;
+  --color-danger: #ef4444;
+  --color-tide: #0d3b4f;
+  --color-tide-light: #1a6b8a;
+  --color-mirror: #e2e8f0;
+  --color-sepia: #d4a574;
+  --color-paper: #f5f0e8;
+  --color-ink: #2c1810;
+  --color-redacted: #1a1a1a;
+  --font-mono: 'Courier New', 'Consolas', monospace;
+  --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-handwriting: 'Segoe Script', 'Comic Sans MS', cursive;
+  --font-official: 'SimSun', 'Songti SC', serif;
+  --glitch-intensity: 2px;
+  --tide-level: 0%;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background:
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.03) 2px,
+      rgba(0,0,0,0.03) 4px
+    );
+  pointer-events: none;
+  z-index: 9999;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: var(--tide-level);
+  background: linear-gradient(
+    to top,
+    rgba(13, 59, 79, 0.6),
+    rgba(13, 59, 79, 0.2),
+    transparent
+  );
+  pointer-events: none;
+  z-index: 9998;
+  transition: height 3s ease;
+}
+
+a {
+  color: var(--color-accent);
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+a:hover {
+  color: var(--color-tide-light);
+}
+
+::selection {
+  background: var(--color-tide);
+  color: var(--color-mirror);
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+
+.page-transition {
+  animation: fadeIn 1.5s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.hidden { display: none !important; }
+
+.dim { color: var(--color-text-dim); }
+
+.faint { color: var(--color-text-faint); }
+
+.mono { font-family: var(--font-mono); }
+
+.handwriting { font-family: var(--font-handwriting); }
+
+.official { font-family: var(--font-official); }
+
+.redacted {
+  background: var(--color-redacted);
+  color: var(--color-redacted);
+  padding: 0 4px;
+  cursor: default;
+  user-select: none;
+  transition: all 0.3s;
+}
+
+.redacted:hover {
+  background: transparent;
+  color: var(--color-danger);
+}
+
+.timestamp {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--color-text-dim);
+}
+
+.separator {
+  border: none;
+  border-top: 1px solid var(--color-text-faint);
+  margin: 2rem 0;
+  opacity: 0.3;
+}

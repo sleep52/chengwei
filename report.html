@@ -251,6 +251,7 @@
       diary6:   { label: '笔记本_第6页.jpg',         size: '2.4 MB' },
       cand:     { label: 'candidates_0813.wav',      size: '12:30'  },
       finalrec: { label: 'final_recording_0817.wav', size: '6:18'   },
+      enc0819:  { label: '加密_0819.wav',            size: '4:47', gated: true },
       bookpg:   { label: 'IMG_20240815_2347.jpg',    size: '4.8 MB' },
       sitehist: { label: '官网_历届大典记录.txt',      size: '6 KB'   },
       sitedm:   { label: '官网_参观须知.txt',         size: '4 KB'   },
@@ -327,8 +328,9 @@
       { re: /阿水|你弟|弟弟/,       then: ['你叫他阿水就行。家里人这么叫。'] },
       { re: /埕尾/,                 then: ['这个地名我现在一看就烦。前阵子搜过一回，出来的是几款二手房。'] },
       { re: /对不起|抱歉|不好意思/,     then: ['不用。你不用跟我讲这个。'] },
-      { re: /会好的|别难过|节哀|想开/,   then: ['嗯。这话我这半个月听了好几回。都挺好，就是听完没地方放。'] },
+      { re: /会好的|别难过|节哀|想开/,   then: ['嗯。这话我两个多月听了好几回。都挺好，就是听完没地方放。'] },
       { re: /报警|警察|立案|律师|证据/,  then: ['报过。笔录做了两回。律师说先等。'] },
+      { re: /(加密|0819|8月19|十九号|凌晨|半夜|谁在笑|有人笑|谁拍|那段录音|最后的录音|电话)/, nudge: true, then: ['那个文件我这边是空的，只显示有个文件名。', '你那边要点得开吗？'], after: ['这个我跟你讲过了。', '还有别的没有。'] },
       { re: /海|滩|水/,            then: ['我到现在不敢看水。刷到海边那些都直接划走。'] },
       { re: /鬼|凶手|杀/,           then: ['这些我不看。他在的时候我也不看。'] },
       { re: /谢谢|辛苦/,            then: ['该我说这句。'] },
@@ -360,6 +362,14 @@
       ])
     ];
 
+    const HEARD = [
+      '那两个电话是他19号半夜打过来的。我手机静音，一个都没接到。',
+      '早上我发过去，就没人接了。',
+      '后头岸上有人笑。那种笑法我听过一模一样的。',
+      '为这句我另外开过一帖。那帖现在没了。',
+      '链接我抄在10楼。你去替我点一下，看还能不能打开。我夜里不敢点这种。'
+    ];
+
     let turn = 0;
     let busy = false;
     let lastSaid = '';
@@ -372,6 +382,9 @@
       busy = true;
       syncSend();
       const said = lastSaid;
+      const heard = (files || []).includes('enc0819') && !GameState.get('sisterHeardEnc0819');
+      if (heard) GameState.set('sisterHeardEnc0819', true);
+      const told = !!GameState.get('sisterHeardEnc0819');
 
       if (turn < QUEUE.length) {
         await QUEUE[turn]();
@@ -379,8 +392,9 @@
       }
 
       const hit = FLAVOR.find(f => f.re.test(said));
-      if (hit) await herSay(hit.then);
-      if (files && files.length) await herSay(['收到了。这些我都存两份，一份发给律师。']);
+      if (hit) await herSay(hit.nudge && told ? hit.after : hit.then);
+      if (heard) await herSay(HEARD);
+      else if (files && files.length) await herSay(['收到了。这些我都存两份，一份发给律师。']);
       if (!hit && !(files && files.length) && turn >= QUEUE.length) {
         if (said.length > 60) await herSay(['你这条长，我分了两次才看完。']);
         else await herSay(['嗯。我先记下。']);
@@ -396,6 +410,7 @@
     const pickList = document.getElementById('pick-list');
     Object.keys(FILES).forEach(k => {
       const f = FILES[k];
+      if (f.gated && !GameState.get('audioUnlocked')) return;
       const row = el(`<div class="pick"><span class="fi">${iconOf(f.label)}</span><span class="fn">${f.label}</span><span class="fs">${f.size}</span></div>`);
       row.addEventListener('click', () => {
         if (picked.has(k)) { picked.delete(k); row.classList.remove('on'); }
@@ -449,7 +464,7 @@
     });
 
     (async function start() {
-      chat.appendChild(el('<div class="day-sep">2024-09-14</div>'));
+      chat.appendChild(el('<div class="day-sep">2024-11-05</div>'));
       await herSay([
         '你好。我是林小月。',
         '你说你去看了他留下的那些东西。',
