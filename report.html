@@ -107,6 +107,31 @@
     }
     .msg-row.me .file-card .fs { color: rgba(255,255,255,0.62); }
 
+    /* 转账气泡 */
+    .pay-card {
+      width: 15.5rem;
+      border-radius: 10px;
+      padding: 0.7rem 0.8rem;
+      margin-top: 0.3rem;
+      background: linear-gradient(135deg, #d89a55, #b9762f);
+      color: #fff;
+      cursor: default;
+    }
+    .pay-card .pt {
+      font-family: var(--font-mono);
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+    .pay-card .pm { font-size: 0.68rem; opacity: 0.88; margin-top: 0.15rem; }
+    .pay-card .pf {
+      margin-top: 0.5rem; padding-top: 0.4rem;
+      border-top: 1px solid rgba(255,255,255,0.24);
+      font-size: 0.6rem; opacity: 0.8;
+      display: flex; justify-content: space-between;
+      font-family: var(--font-mono);
+    }
+
     /* 输入区 */
     .composer {
       position: fixed;
@@ -300,6 +325,23 @@
       `);
     }
 
+    function payCard() {
+      const row = el(`
+        <div class="msg-row from">
+          <div class="dm-bubble" style="padding:0;background:transparent;">
+            <div class="pay-card">
+              <div class="pt">转账 ¥200.00</div>
+              <div class="pm">备注：麻烦你了</div>
+              <div class="pf"><span>林小月</span><span>已收款</span></div>
+            </div>
+            <span class="stamp" style="color:#8899a6;padding:0 0.8rem;">${hhmm()}</span>
+          </div>
+        </div>
+      `);
+      tick(1);
+      return row;
+    }
+
     async function herSay(texts) {
       for (const t of texts) {
         const row = el('<div class="msg-row from"><div class="dm-bubble typing"><span class="dots"><i></i><i></i><i></i></span></div></div>');
@@ -326,7 +368,8 @@
 
     const FLAVOR = [
       { re: /阿水|你弟|弟弟/,       then: ['你叫他阿水就行。家里人这么叫。'] },
-      { re: /埕尾/,                 then: ['这个地名我现在一看就烦。前阵子搜过一回，出来的是几款二手房。'] },
+      { re: /埕尾/,                 then: ['说句不好听的，那个"埕"字我到现在都不认得。帖子里那几个地名我都是复制粘贴的。'] },
+      { re: /记者|新闻|报道|稿子|小编|海澄/, then: ['那篇稿子我在底下讲过一句，讲完就后悔了。跟人在网上吵这个没用，他不会改。', '你们要再去找他，别写我的名字。'] },
       { re: /对不起|抱歉|不好意思/,     then: ['不用。你不用跟我讲这个。'] },
       { re: /会好的|别难过|节哀|想开/,   then: ['嗯。这话我两个多月听了好几回。都挺好，就是听完没地方放。'] },
       { re: /报警|警察|立案|律师|证据/,  then: ['报过。笔录做了两回。律师说先等。'] },
@@ -467,7 +510,17 @@
       chat.appendChild(el('<div class="day-sep">2024-11-05</div>'));
       await herSay([
         '你好。我是林小月。',
-        '你说你去看了他留下的那些东西。',
+        '帖子是我发的。这个号上就我一个人。'
+      ]);
+      chat.appendChild(payCard());
+      toBottom();
+      await sleep(1500);
+      await herSay([
+        '钱不多。我本来以为是给帮忙的人的，结果没人帮。',
+        '你收着就行。我不挑你查成什么样。'
+      ]);
+      await sleep(900);
+      await herSay([
         '他拍那种没人住的村子，拍了三年。这回去的地方我连名字都没听过。'
       ]);
       await sleep(1200);

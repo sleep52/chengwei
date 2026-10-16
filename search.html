@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>埕尾村_搜索结果</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #fff;
+    color: #333;
+    font-family: "Microsoft YaHei", "PingFang SC", -apple-system, sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  a { text-decoration: none; }
+
+  .head { border-bottom: 1px solid #ebebeb; padding: 14px 0 0; }
+  .head-inner { max-width: 1020px; margin: 0 auto; padding: 0 20px; display: flex; align-items: center; gap: 20px; }
+  .logo { font-size: 21px; font-weight: 700; color: #4c6ef5; letter-spacing: 1px; flex-shrink: 0; }
+  .logo span { color: #b0bafc; font-weight: 400; font-size: 12px; margin-left: 4px; }
+  .sbox { display: flex; flex: 1; max-width: 560px; }
+  .sbox input {
+    flex: 1; height: 38px; border: 2px solid #4c6ef5; border-right: none;
+    padding: 0 10px; font-size: 14px; font-family: inherit; outline: none; color: #222;
+    border-radius: 2px 0 0 2px;
+  }
+  .sbox button {
+    width: 88px; height: 38px; border: 2px solid #4c6ef5; background: #4c6ef5; color: #fff;
+    font-size: 14px; font-family: inherit; cursor: pointer; border-radius: 0 2px 2px 0;
+  }
+  .sbox button:hover { background: #3d5ae0; border-color: #3d5ae0; }
+  .head-tools { margin-left: auto; font-size: 12px; color: #999; display: flex; gap: 14px; }
+  .head-tools b { color: #666; font-weight: 400; cursor: default; }
+
+  .tabs { max-width: 1020px; margin: 0 auto; padding: 0 20px; display: flex; gap: 22px; font-size: 13px; }
+  .tabs a { color: #666; padding: 8px 0 9px; }
+  .tabs a.on { color: #4c6ef5; border-bottom: 2px solid #4c6ef5; }
+  .tabs a:hover { color: #4c6ef5; }
+
+  .body { max-width: 1020px; margin: 0 auto; padding: 16px 20px 40px; }
+  .stat { font-size: 12px; color: #9aa4ae; margin-bottom: 16px; }
+  .filter { font-size: 12px; color: #9aa4ae; margin-bottom: 12px; }
+  .filter a { color: #4c6ef5; margin-right: 12px; }
+  .filter a.on { color: #333; }
+
+  .res { margin-bottom: 26px; max-width: 640px; }
+  .res .t { font-size: 17px; line-height: 1.4; }
+  .res .t a { color: #2457a7; }
+  .res .t a:hover { text-decoration: underline; }
+  .res .t.dead a { color: #8d959d; cursor: default; }
+  .res .u { font-size: 12px; color: #5a8a52; margin-top: 3px; word-break: break-all; }
+  .res .u b { font-weight: 400; color: #2b5797; }
+  .res .d { font-size: 13px; color: #525252; margin-top: 4px; }
+  .res .d em { font-style: normal; color: #db4b3a; }
+  .res .x { font-size: 12px; color: #9aa4ae; margin-top: 4px; display: flex; gap: 12px; }
+  .res .x a { color: #4c6ef5; }
+  .res .snap { color: #4c6ef5; }
+  .res .off { display: inline-block; margin-top: 5px; font-size: 12px; color: #8d959d; background: #f5f6f7; padding: 2px 8px; }
+
+  .rel { margin-top: 34px; border-top: 1px solid #eee; padding-top: 16px; }
+  .rel h4 { font-size: 15px; color: #333; font-weight: 400; margin-bottom: 12px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 10px; }
+  .chips a {
+    font-size: 13px; color: #333; background: #f5f6f7; border: 1px solid #ececec;
+    padding: 5px 13px; border-radius: 2px;
+  }
+  .chips a:hover { background: #eef1f6; color: #4c6ef5; }
+
+  .pages { margin-top: 30px; font-size: 13px; color: #999; display: flex; gap: 8px; align-items: center; }
+  .pages i { font-style: normal; width: 26px; height: 26px; border: 1px solid #e2e2e2; display: flex; align-items: center; justify-content: center; color: #4c6ef5; }
+  .pages i.cur { background: #4c6ef5; border-color: #4c6ef5; color: #fff; }
+
+  .censor {
+    margin-top: 26px; font-size: 12px; color: #9aa4ae;
+    background: #fafafa; border: 1px solid #f0f0f0; padding: 10px 13px; line-height: 1.9;
+  }
+  .none { max-width: 620px; padding: 24px 0 8px; }
+  .none h3 { font-size: 16px; color: #444; font-weight: 400; margin-bottom: 10px; }
+  .none p { font-size: 13px; color: #777; margin-bottom: 6px; }
+  .none ul { margin: 12px 0 0 18px; font-size: 13px; color: #777; }
+  .none li { margin-bottom: 5px; }
+
+  .foot { text-align: center; font-size: 12px; color: #b4bcc4; padding: 24px 0 40px; border-top: 1px solid #f0f0f0; }
+  .foot a { color: #b4bcc4; margin: 0 7px; }
+</style>
+</head>
+<body>
+
+<div class="head">
+  <div class="head-inner">
+    <a class="logo" href="search.html?q=埕尾村">云搜<span>网页</span></a>
+    <form class="sbox" action="search.html" method="get">
+      <input id="q" type="text" name="q" autocomplete="off" aria-label="搜索">
+      <button type="submit">搜 索</button>
+    </form>
+    <div class="head-tools"><b>设置</b><b>登录</b></div>
+  </div>
+  <div class="tabs">
+    <a href="search.html" class="on">网页</a>
+    <a href="search.html?q=资讯">资讯</a>
+    <a href="search.html?q=问答">问答</a>
+    <a href="search.html?q=图片">图片</a>
+    <a href="search.html?q=视频">视频</a>
+  </div>
+</div>
+
+<div class="body">
+  <div class="stat" id="stat"></div>
+  <div id="list"></div>
+  <div id="tail"></div>
+</div>
+
+<div class="foot">
+  <a href="search.html?q=帮助">帮助</a><a href="search.html?q=投诉">投诉</a><a href="search.html?q=广告">广告</a><a href="search.html?q=开发者">开发者</a><br>
+  ©2024 云搜
+</div>
+
+<script>
+  const PAGES = {
+    cw: {
+      q: '埕尾村',
+      stat: '相关结果约 1,240 条（用时 0.28 秒）',
+      list: [
+        {
+          t: '埕尾村_区划地名',
+          u: 'www.chengwei-dlm.gov.cn › 地名信息库 › 村级',
+          d: '埕尾村，原<em>埕尾</em>村民委员会驻地，位于县境东南沿海，距镇政府驻地12公里。<em>2009年，埕尾村村民委员会建制撤销，并入邻村洪厝</em>。村域名沿用，地图图幅未更新。',
+          x: ['2024-09-18']
+        },
+        {
+          t: '一外地青年在埕尾村一带失联十八天，相关部门已介入 — 海澄在线',
+          u: 'www.haichengzx.example.cn › 社会 › 正文',
+          d: '9月6日，本报从县有关部门获悉，一名外省籍青年在<em>埕尾村</em>一带失去联系。县旅游部门提醒：七月以来，我县沿海已劝返私自进入未开放岸段人员三百余人次。',
+          x: ['海澄在线', '2024-09-06'],
+          href: 'news.html'
+        },
+        {
+          t: '埕尾村潮生宫 — 官方网站',
+          u: 'chaoshengong.example.cn',
+          d: '欢迎参观埕尾村潮生宫官方网站。本宫始建于洪武元年（1368），迄今六百余年。如需参观请提前联系庙祝林水伯。<em>七月大潮期间庙宇不对外开放</em>。',
+          x: ['<span class="snap">快照</span>', '本页最后收录于 2024-08-01'],
+          href: 'temple-site.html'
+        },
+        {
+          t: '埕尾村怎么走？有没有知道的朋友',
+          u: 'wen.asklocal.example.cn › 问题 4471209',
+          d: '想自驾去，导航搜不到这个地方。有人去过吗，路况怎么样。<br>我来帮他答 &nbsp;·&nbsp; <em>0 个回答</em>',
+          x: ['2024-10-19']
+        },
+        {
+          t: '埕尾村还在吗，听说整村都搬空了',
+          u: 'wen.asklocal.example.cn › 问题 4503886',
+          d: '以前暑期去那边吃过海鲜，现在路上有围挡。村里人安置到哪儿去了。<br>我来帮他答 &nbsp;·&nbsp; <em>0 个回答</em>',
+          x: ['2024-11-02']
+        },
+        {
+          t: '【互助区】我弟弟去了埕尾村，一个月没消息',
+          u: 'bbs.chengwei.example.cn › thread › 2793',
+          d: '大家好，我是阿月，在外面打工的。他做的是那种拍没人去的地方的片子，8月2号他一个人去了<em>埕尾村</em>，8月19号之后就没消息了。',
+          x: ['埕尾村论坛', '2024-09-13', '<a href="index.html">查看帖子</a>'],
+          href: 'index.html'
+        },
+        {
+          t: '【互助区】有没有人知道这个村子现在还在不在',
+          u: 'bbs.chengwei.example.cn › thread › 2847',
+          d: '我不问别的。就问这个村现在还有人住吗，路上那段围挡是施工的还是别的。去年秋天我还在那边…',
+          x: ['<span class="off">该帖已被版主删除</span>', '<a href="thread_2847.html">尝试访问原链接</a>']
+        },
+        {
+          t: '埕尾村 海景自建房 整栋三层 28万',
+          u: 'fang.px-local.example.cn › 房源 11830742',
+          d: '房东直售，产权清楚，屋后就是滩涂。带一个铁皮棚，钥匙押在镇上。<span class="off">该房源已下架 · 2024-10-11</span>',
+          x: ['发布 2024-05-27 · 浏览 3,116']
+        },
+        {
+          t: '渔村记忆｜埕尾：一个正在退潮的村庄',
+          u: 'www.haichengzx.example.cn › 本地风光 › 2023',
+          d: '青壮年基本都出去了，留在村里的多是老人。村里的最后一次唱戏是二〇一七年，戏台现在锁着。',
+          x: ['<span class="off">原文章无法查看 · 站点改版</span>'],
+          dead: true
+        },
+        {
+          t: '埕尾村（地点）',
+          u: 'baike.example.cn › 词条 8841203',
+          d: '埕尾村为福建省沿海自然村。本词条由网友上传维护。',
+          x: ['<span class="off">该词条已于 2024-10-12 删除 · 删除原因：缺乏资料来源</span>']
+        }
+      ],
+      rel: ['埕尾村怎么走', '埕尾村 还在吗', '还潮', '潮生宫 参观须知', '埕尾村 新闻', '未开放岸段'],
+      censor: '依据相关法律法规和政策，本站部分结果未予展示。共 6 条。'
+    },
+
+    hc: {
+      q: '还潮',
+      stat: '相关结果约 3万 条（用时 0.21 秒）',
+      list: [
+        {
+          t: '还潮（气象名词）_百科',
+          u: 'baike.example.cn › 词条 2260741',
+          d: '<em>还潮</em>又称"回潮""返潮"，指沿海及江南地区春季至初夏，暖湿气流增强、地表与墙体含水率上升的现象。属正常天气现象，与"回南天"相近。',
+          x: ['词条编辑者：气象分类', '2021-03-16'],
+          href: ''
+        },
+        {
+          t: '闽南语辞典 · 还潮',
+          u: 'dict.mnn-language.example.cn › 条 4711',
+          d: '还潮：潮水退后又复回。引申为旧事重现。<br>例：「海面还潮，船要系牢。」',
+          x: ['2019-07-02']
+        },
+        {
+          t: '还潮是什么意思？看到有人提这个，说是沿海那边的说法',
+          u: 'wen.asklocal.example.cn › 问题 4388015',
+          d: '在一个村子的官网上看到的，写的是每二十年一次。有本地朋友能讲讲吗，是祭什么。<br>我来帮他答 &nbsp;·&nbsp; <em>0 个回答</em>',
+          x: ['2024-09-22']
+        },
+        {
+          t: '关于"还潮"这一民俗活动的讨论（共 12 楼）',
+          u: 'tieba.local.example.cn › p › 68120944',
+          d: '1L：我外婆那边有这个说法，她只讲了一句我就被打断了。<br>2L：编的吧。<br>…',
+          x: ['<span class="off">该贴已被折叠 · 3 条回复被删除</span>']
+        },
+        {
+          t: '回应关切｜关于网传我县相关说法的核查情况',
+          u: 'www.haichengzx.example.cn › 回应关切 › 正文',
+          d: '针对近期网络上流传的有关说法，我县相关部门已开展核查。请广大网民不信谣、不传谣。',
+          x: ['<span class="off">该页面链接已失效 · 2024-10-08</span>']
+        }
+      ],
+      rel: ['回南天', '返潮 怎么办', '农历七月初三', '埕尾村', '潮生宫'],
+      censor: ''
+    }
+  };
+
+  const esc = s => s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+  function render(query) {
+    const q = (query || '').trim();
+    const set = Object.values(PAGES).find(p => p.q === q);
+    const input = document.getElementById('q');
+    input.value = set ? set.q : q;
+    document.title = (q || '云搜') + '_搜索结果';
+
+    const list = document.getElementById('list');
+    const stat = document.getElementById('stat');
+    const tail = document.getElementById('tail');
+
+    if (!set) {
+      stat.textContent = q ? '相关结果约 0 条（用时 0.11 秒）' : '请输入关键词';
+      list.innerHTML = `
+        <div class="none">
+          <h3>未找到与「${esc(q) || '—'}」相关的网页。</h3>
+          <p>请尝试：</p>
+          <ul>
+            <li>检查输入是否有错别字</li>
+            <li>换用更常见的关键词</li>
+            <li>减少关键词数量</li>
+          </ul>
+          <p style="margin-top:14px;">部分网页无法被收录，无法显示其内容。</p>
+        </div>`;
+      tail.innerHTML = `
+        <div class="rel">
+          <h4>大家都在搜</h4>
+          <div class="chips">
+            <a href="search.html?q=埕尾村">埕尾村</a>
+            <a href="search.html?q=还潮">还潮</a>
+            <a href="search.html?q=潮生宫">潮生宫</a>
+            <a href="search.html?q=未开放岸段">未开放岸段</a>
+          </div>
+        </div>`;
+      return;
+    }
+
+    stat.textContent = set.stat;
+    list.innerHTML = set.list.map(r => `
+      <div class="res">
+        <div class="t${r.dead ? ' dead' : ''}">${r.href ? `<a href="${r.href}">${r.t}</a>` : `<a href="javascript:void(0)">${r.t}</a>`}</div>
+        <div class="u">${r.u}</div>
+        <div class="d">${r.d}</div>
+        <div class="x">${(r.x || []).map(x => `<span>${x}</span>`).join('')}</div>
+      </div>`).join('');
+
+    tail.innerHTML = `
+      ${set.rel ? `<div class="rel"><h4>相关搜索</h4><div class="chips">${set.rel.map(w => `<a href="search.html?q=${encodeURIComponent(w)}">${w}</a>`).join('')}</div></div>` : ''}
+      <div class="pages"><i class="cur">1</i><i>2</i><i>3</i><i>4</i><i>5</i><span style="margin-left:6px;">下一页 &gt;</span></div>
+      ${set.censor ? `<div class="censor">${set.censor}</div>` : ''}`;
+  }
+
+  const params = new URLSearchParams(location.search);
+  render(params.get('q') || '埕尾村');
+
+  document.querySelector('.sbox').addEventListener('submit', e => {
+    e.preventDefault();
+    render(document.getElementById('q').value);
+    window.scrollTo(0, 0);
+  });
+</script>
+
+</body>
+</html>
