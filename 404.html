@@ -80,7 +80,7 @@
 
     <p>论坛不提供原帖内容查看，也不提供删除前的正文备份。</p>
 
-    <div class="arch">
+    <div class="arch" id="arch" style="display:none;">
       <div class="arch-head">第三方网页存档 · 与本论坛无关</div>
       <a href="ending-d.html">web.archive.org / 埕尾村论坛 / 互助区 / 帖子 2847 · 抓取于 2024-11-05 08:12</a>
       <div class="note">该快照由第三方站点在删除前自动抓取。论坛不对其内容的真实性负责。</div>
@@ -89,5 +89,18 @@
     <p style="margin-top:1.4rem;"><a href="index.html">返回论坛首页</a></p>
     <div class="meta">错误码 404 · 潮汐论坛</div>
   </div>
+
+  <script src="js/state.js"></script>
+  <script>
+    (function () {
+      var unlocked;
+      try {
+        unlocked = (typeof GameState === 'undefined') || !!GameState.get('audioUnlocked');
+      } catch (e) {
+        unlocked = true;
+      }
+      if (unlocked) document.getElementById('arch').style.display = 'block';
+    })();
+  </script>
 </body>
 </html>
